@@ -1,0 +1,141 @@
+{
+    "main": {
+        "name": "Jisung Jung",
+        "description": "I'm a data scientist and I use python, R and cloud AI to analyze data...",
+        "image": "profilepic.jpg",
+        "bio": "Currently, I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, compact cameras, and arcade games.",
+        "contactmessage": "Here is where you should write your message to readers to have them get in contact with you.",
+        "email": "jisung.jung@me.com",
+        "phone": "+82-10-9964-1173 / +1-415-815-3023",
+        "github": "https://www.github.com/marvin-jung",
+        "project": "https://marvin-jung.github.io/",
+        "address": {
+            "street": "468 Gamasan-ro, Yeongdeungpo-gu",
+            "city": "Seoul",
+            "state": "Republic of Korea"
+        },
+        "website": "https://github.com/",
+        "resumedownload": "https://github.com/",
+        "social": [
+            {
+                "name": "facebook",
+                "url": "https://www.facebook.com/jisung.jung.376/",
+                "className": "fa fa-facebook"
+            },
+            {
+                "name": "twitter",
+                "url": "http://www.twitter.com/jjung2019",
+                "className": "fa fa-twitter"
+            },
+            {
+                "name": "linkedin",
+                "url": "https://www.linkedin.com/in/mrvn-jung",
+                "className": "fa fa-linkedin"
+            },
+            {
+                "name": "instagram",
+                "url": "https://www.instagram.com/annagale",
+                "className": "fa fa-instagram"
+            },
+            {
+                "name": "github",
+                "url": "https://www.github.com/marvin-jung",
+                "className": "fa fa-github"
+            }
+        ]
+    },
+    "resume": {
+        "skillmessage": "Here you can create a short write-up of your skills to show off to employers",
+        "education": [
+            {
+                "school": "Hult International Business School",
+                "degree": "Masters in Business Analytics",
+                "graduated": "August 2021",
+                "description": "Deep dive into modern data science to gain the analytical capability and business acumen to translate data into meaningful actions."
+            },
+            {
+                "school": "Hult International Business School",
+                "degree": "Masters in Business Administration (MBA)",
+                "graduated": "August 2020",
+                "description": "Study every business topic through a global lens, master working cross-culturally, leverage disruptive technologies to shape the future, and develop the deep self-awareness needed to lead effectively and with confidence."
+            },
+
+            {
+                "school": "Kyung Hee University",
+                "degree": "Bachelor's in Business Administration",
+                "graduated": "February 2007",
+                "description": "Build a well-rounded foundation in business administration to recognize business problems and opportunities, to develop innovative responses to them."
+            }
+        ],
+        "work": [
+            {
+                "company": "EHcore",
+                "title": "Business Data Analyst, Analytic and Insights",
+                "years": "October 2021 - Present",
+                "description": "Enhance analytical capabilities and AI power for components and equipment quality management in SK Hynix."
+            },
+            {
+                "company": "Loft Science LLC",
+                "title": "Head of Product Management, Startup member",
+                "years": "July 2021 - Present",
+                "description": "Build travel inspiration and research focused mobile application and go-to-market strategy from ideation to launch."
+            },
+            {
+                "company": "DL E&C",
+                "title": "Project IT Manager, Technical Document Specialist",
+                "years": "November 2006 - October 2018",
+                "description": "Led for project IT administration and data management, Established and operated technical document control systems."
+            }
+        ],
+        "skills": [
+            {
+                "name": "Python",
+                "level": "80%"
+            },
+            {
+                "name": "R",
+                "level": "80%"
+            },
+            {
+                "name": "SQL",
+                "level": "60%"
+            },
+            {
+                "name": "Tableau",
+                "level": "70%"
+            },
+            {
+                "name": "Tensorflow",
+                "level": "30%"
+            }
+        ]
+    },
+    "portfolio": {
+        "projects": [
+            {
+                "title": "Gryffindor Project",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project1.jpg",
+                "url": "https://www.google.com"
+            },
+            {
+                "title": "Gryffindor Project",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project2.jpg",
+                "url": "https://www.google.com"
+            },
+            {
+                "title": "Gryffindor Project",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project3.jpg",
+                "url": "https://www.google.com"
+            },
+            {
+                "title": "Gryffindor Project",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project4.jpg",
+                "url": "https://www.google.com"
+            }
+        ]
+    }
+}
