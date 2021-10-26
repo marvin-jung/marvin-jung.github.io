@@ -114,13 +114,13 @@
         "projects": [
             {
                 "title": "Tweets Text Analytics",
-                "category": "Through Twitter text data, we examine the biggest music streaming platform’s characteristics and interests, visualize significant relationships",
+                "category": "Through Twitter text data, we examine the biggest music streaming platform’s characteristics and interests, visualize significant relationships.",
                 "image": "project1.png",
                 "url": "https://github.com/marvin-jung/Tweets-Text-Analytics"
             },
             {
                 "title": "Tableau Interactive Dashboard",
-                "category": "This report is about the representation of the performance in sales and profit for superstore company during the most recent 24-month period.",
+                "category": "This report is about the representation of the performance in sales and profit for superstore company dated from 2018 to 2019.",
                 "image": "project2.png",
                 "url": "https://github.com/marvin-jung/Superstore-Interactive-Dashboard"
             },
