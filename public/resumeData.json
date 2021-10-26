@@ -1,7 +1,7 @@
 {
     "main": {
         "name": "Jisung Jung",
-        "description": "I'm a data scientist and I use python, R and cloud AI to analyze data...",
+        "description": "I'm an aspiring data scientist and I can use python, R and cloud AI platform to analyze data",
         "image": "profilepic.jpg",
         "bio": "Currently, I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, compact cameras, and arcade games.",
         "contactmessage": "Here is where you should write your message to readers to have them get in contact with you.",
@@ -84,7 +84,7 @@
                 "company": "DL E&C",
                 "title": "Project IT Manager, Technical Document Specialist",
                 "years": "November 2006 - October 2018",
-                "description": "Led for project IT administration and data management, Established and operated technical document control systems."
+                "description": "Led for project IT administration and data management. Established and operated technical document control systems."
             }
         ],
         "skills": [
@@ -113,29 +113,42 @@
     "portfolio": {
         "projects": [
             {
-                "title": "Gryffindor Project",
+                "title": "Tweets Text Analytics",
+                "category": "Through Twitter text data, we examine the biggest music streaming platform’s characteristics and interests, visualize significant relationships",
+                "image": "project1.png",
+                "url": "https://github.com/marvin-jung/Tweets-Text-Analytics"
+            },
+            {
+                "title": "Superstore Interactive Dashboard",
+                "category": "This report is about the representation of the performance in sales and profit for superstore company during the most recent 24-month period.",
+                "image": "project2.png",
+                "url": "https://github.com/marvin-jung/Superstore-Interactive-Dashboard"
+            },
+            {
+                "title": "Air France Business Case",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project3.jpg",
+                "url": "https://github.com/marvin-jung/Air-France-Business-Case"
+            },
+            {
+                "title": "NUS - Visual Data Storytelling",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project4.jpg",
+                "url": "https://www.google.com"
+            },
+            {
+                "title": "Tweets Text Analytics",
                 "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
                 "image": "project1.jpg",
                 "url": "https://www.google.com"
             },
             {
-                "title": "Gryffindor Project",
+                "title": "Tweets Text Analytics",
                 "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
-                "image": "project2.jpg",
+                "image": "project1.jpg",
                 "url": "https://www.google.com"
             },
-            {
-                "title": "Gryffindor Project",
-                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
-                "image": "project3.jpg",
-                "url": "https://www.google.com"
-            },
-            {
-                "title": "Gryffindor Project",
-                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
-                "image": "project4.jpg",
-                "url": "https://www.google.com"
-            }
+
         ]
     }
 }
