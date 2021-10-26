@@ -114,18 +114,6 @@
         "projects": [
             {
                 "title": "Tweets Text Analytics",
-                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
-                "image": "project1.jpg",
-                "url": "https://www.google.com"
-            },
-            {
-                "title": "NUS - Visual Data Storytelling",
-                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
-                "image": "project1.jpg",
-                "url": "https://www.google.com"
-            },
-            {
-                "title": "Tweets Text Analytics",
                 "category": "Through Twitter text data, we examine the biggest music streaming platform’s characteristics and interests, visualize significant relationships",
                 "image": "project1.png",
                 "url": "https://github.com/marvin-jung/Tweets-Text-Analytics"
@@ -143,11 +131,30 @@
                 "url": "https://github.com/marvin-jung/Air-France-Business-Case"
             },
             {
-                "title": "Apprentice Chef Analysis",
+                "title": "Intel Asia Campaign - Catch & Win",
                 "category": "With ML models, we detect the consumer behaviors and find insights to make the business stay relevant to existing and potential customers.",
                 "image": "project4.png",
                 "url": "https://github.com/marvin-jung/Apprentice-Chef-Analysis"
+            },
+            {
+                "title": "NUS - Visual Data Storytelling",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project1.jpg",
+                "url": "https://www.google.com"
+            },
+            {
+                "title": "Windows? or Mac?",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project1.jpg",
+                "url": "https://www.google.com"
+            },
+            {
+                "title": "Accounting Database",
+                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
+                "image": "project1.jpg",
+                "url": "https://www.google.com"
             }
+
         ]
     }
 }
