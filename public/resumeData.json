@@ -1,9 +1,9 @@
 {
     "main": {
-        "name": "Jisung Jung",
-        "description": "I'm an aspiring data scientist and I can use python, R and cloud AI platform to analyze data",
+        "name": "I'm Jisung Jung.",
+        "description": "Performing big data analysis, machine learning and AI, I encourage your company address complex problems and make data driven decisions. Let's start scrolling and learn more about me.",
         "image": "profilepic.jpg",
-        "bio": "Currently, I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, classic cameras, and arcade games.",
+        "bio": "Now I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, classic cameras, and arcade games.",
         "contactmessage": "Here is where you should write your message to readers to have them get in contact with you.",
         "email": "jisung.jung@me.com",
         "phone": "+82-10-9964-1173 / +1-415-815-3023",
@@ -45,17 +45,17 @@
         ]
     },
     "resume": {
-        "skillmessage": "Here you can create a short write-up of your skills to show off to employers",
+        "skillmessage": "As an aspiring data scientist, I can use python, R, SQL, Tableau and cloud AI platform to analyze data",
         "education": [
             {
                 "school": "Hult International Business School",
-                "degree": "Masters in Business Analytics",
+                "degree": "Master's in Business Analytics",
                 "graduated": "August 2021",
                 "description": "Deep dive into modern data science to gain the analytical capability and business acumen to translate data into meaningful actions."
             },
             {
                 "school": "Hult International Business School",
-                "degree": "Masters in Business Administration (MBA)",
+                "degree": "Master's in Business Administration (MBA)",
                 "graduated": "August 2020",
                 "description": "Study every business topic through a global lens, master working cross-culturally, leverage disruptive technologies to shape the future, and develop the deep self-awareness needed to lead effectively and with confidence."
             },
@@ -139,19 +139,19 @@
             {
                 "title": "Intel Asia Campaign - Catch & Win",
                 "category": "With the linear programming method, Intel’s campaign budget can be well allocated and finalize the plan with optimal results.",
-                "image": "project5.png",
+                "image": "project5.jpg",
                 "url": "https://github.com/marvin-jung/Intel-Asia-Pacific-The-Catch-Win-Campaign"
             },                        
             {
                 "title": "NUS - Visual Data Storytelling",
                 "category": "The dataviz introduces NUS overall, top degrees, employment rate, salaries and relevant information to prove NUS is the future for children.",
-                "image": "project6.png",
+                "image": "project6.jpg",
                 "url": "https://github.com/marvin-jung/NUS-Visual-Data-Storytelling"
             },
             {
                 "title": "Windows? or Mac?",
                 "category": "We analyze the current demographic and behaviors to find Apple's current customers and next steps for future campaigns based on their personality traits.",
-                "image": "project7.png",
+                "image": "project7.jpg",
                 "url": "https://github.com/marvin-jung/Windows-or-Mac"
             },
             {
