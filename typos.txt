@@ -1,0 +1,18 @@
+1. Masters -> Master's
+
+2. Here you can create a short write-up of your skills to show off to employers
+
+3. Apprentice-Chef-Analysis
+
+4. Compact -> Classic
+
+To-do
+1. Resume
+2. Hangul Version
+3. 경력기술서
+4. 초기화면 배경 변경
+5. 인사말 수정
+
+추가 참고
+1. https://www.styleshout.com/free-templates/ceevee/
+2. https://www.styleshout.com/demo/?theme=ceevee
