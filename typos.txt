@@ -4,6 +4,8 @@
 
 3. Apprentice-Chef-Analysis
 
+4. Compact -> Classic
+
 To-do
 1. Resume
 2. Hangul Version
