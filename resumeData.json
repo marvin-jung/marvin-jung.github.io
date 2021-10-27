@@ -3,7 +3,7 @@
         "name": "Jisung Jung",
         "description": "I'm an aspiring data scientist and I can use python, R and cloud AI platform to analyze data",
         "image": "profilepic.jpg",
-        "bio": "Currently, I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, compact cameras, and arcade games.",
+        "bio": "Currently, I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, classic cameras, and arcade games.",
         "contactmessage": "Here is where you should write your message to readers to have them get in contact with you.",
         "email": "jisung.jung@me.com",
         "phone": "+82-10-9964-1173 / +1-415-815-3023",
@@ -90,7 +90,7 @@
         "skills": [
             {
                 "name": "Python",
-                "level": "80%"
+                "level": "75%"
             },
             {
                 "name": "R",
@@ -131,28 +131,34 @@
                 "url": "https://github.com/marvin-jung/Air-France-Business-Case"
             },
             {
-                "title": "Intel Asia Campaign - Catch & Win",
+                "title": "Apprentice-Chef-Analysis",
                 "category": "With ML models, we detect the consumer behaviors and find insights to make the business stay relevant to existing and potential customers.",
                 "image": "project4.png",
                 "url": "https://github.com/marvin-jung/Apprentice-Chef-Analysis"
             },
             {
+                "title": "Intel Asia Campaign - Catch & Win",
+                "category": "With the linear programming method, Intel’s campaign budget can be well allocated and finalize the plan with optimal results.",
+                "image": "project5.png",
+                "url": "https://github.com/marvin-jung/Intel-Asia-Pacific-The-Catch-Win-Campaign"
+            },                        
+            {
                 "title": "NUS - Visual Data Storytelling",
-                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
-                "image": "project1.jpg",
-                "url": "https://www.google.com"
+                "category": "The dataviz introduces NUS overall, top degrees, employment rate, salaries and relevant information to prove NUS is the future for children.",
+                "image": "project6.png",
+                "url": "https://github.com/marvin-jung/NUS-Visual-Data-Storytelling"
             },
             {
                 "title": "Windows? or Mac?",
-                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
-                "image": "project1.jpg",
-                "url": "https://www.google.com"
+                "category": "We analyze the current demographic and behaviors to find Apple's current customers and next steps for future campaigns based on their personality traits.",
+                "image": "project7.png",
+                "url": "https://github.com/marvin-jung/Windows-or-Mac"
             },
             {
                 "title": "Accounting Database",
-                "category": "Magic Nagini bezoar, Hippogriffs Headless Hunt giant squid petrified.",
-                "image": "project1.jpg",
-                "url": "https://www.google.com"
+                "category": "After a deep understanding of the design of the data through the ER, we developed organized B/S and P&L.",
+                "image": "project8.png",
+                "url": "https://github.com/marvin-jung/Accounting-Database"
             }
 
         ]
