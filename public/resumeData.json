@@ -3,7 +3,7 @@
         "name": "Jisung Jung",
         "description": "Performing big data analysis, machine learning, and AI technology, I boost your business by addressing complex problems and making data-driven decisions. Let's start scrolling and learn more about me.",
         "image": "profilepic.jpg",
-        "bio": "Now I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, classic cameras, and arcade games.",
+        "bio": "Now I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, classic cameras, and arcade classic games.",
         "contactmessage": "Here is where you should write your message to readers to have them get in contact with you.",
         "email": "jisung.jung@me.com",
         "phone": "+82-10-9964-1173 / +1-415-815-3023",
@@ -14,8 +14,8 @@
             "city": "Seoul",
             "state": "Republic of Korea"
         },
-        "website": "https://github.com/",
-        "resumedownload": "https://github.com/",
+        "website": "https://marvin-jung.github.io/",
+        "resumedownload": "https://github.com/marvin-jung/marvin-jung/raw/main/Jisung-Jung-Resume-Ko.pdf",
         "social": [
             {
                 "name": "facebook",
@@ -128,7 +128,7 @@
                 "title": "Air France Flexdashboard",
                 "category": "We diagnose Air France how to maximize the net earning and maximize the returns of its Internet marketing campaigns by assessing strategy options.",
                 "image": "project3.png",
-                "url": "https://github.com/marvin-jung/Air-France-Business-Case"
+                "url": "https://github.com/marvin-jung/Air-France-Flexdashboard"
             },
             {
                 "title": "Apprentice Chef Analysis",
