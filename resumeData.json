@@ -156,7 +156,7 @@
             },
             {
                 "title": "Accounting Database",
-                "category": "After a deep understanding of the design of the data through the  Entity Relationship (ER) Diagram, we develop the organized B/S and P&L.",
+                "category": "After a deep understanding of the design of the accounting entry data through the Entity Relationship (ER) Diagram, we develop the organized B/S and P&L.",
                 "image": "project8.png",
                 "url": "https://github.com/marvin-jung/Accounting-Database"
             },
