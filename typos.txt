@@ -3,6 +3,14 @@ To-do
 2. Hangul Version
 3. 경력기술서
 
+Remaining projects
+1. yoshimi_battles_the_pink_robot
+2. 직업 만족도 설문 조사 ANOVA 분석
+3. 온라인 잡화 쇼핑몰 마케팅 KPI 대시보드 구축
+4. 월드뱅크 오픈 데이터 EDA 및 Data 시각화
+5. NLP Analysis
+
+
 추가 참고
 1. https://www.styleshout.com/free-templates/ceevee/
 2. https://www.styleshout.com/demo/?theme=ceevee

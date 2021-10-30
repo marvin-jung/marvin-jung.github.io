@@ -3,7 +3,7 @@
         "name": "Jisung Jung",
         "description": "Performing big data analysis, machine learning, and AI technology, I boost your business by addressing complex problems and making data-driven decisions. Let's start scrolling and learn more about me",
         "image": "profilepic.jpg",
-        "bio": "Now I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, classic cameras, and arcade classic games.",
+        "bio": "Now I am working as a data analyst. I had managed millions of engineering data and project systems at plant construction field from 2006 to 2018. I majored in business administration both bachelor's and master´s degrees, also majored in double master's in business analytics degree. Contracted work for a freelance employee, I am executing quality data analysis by Python, R, and Oracle Database for manufacturing equipment and components in the SK Hynix. I am interested in retro styles of pop music, classic cameras, and classic arcade games.",
         "contactmessage": "Here is where you should write your message to readers to have them get in contact with you.",
         "email": "jisung.jung@me.com",
         "phone": "+82-10-9964-1173 / +1-415-815-3023",
@@ -159,8 +159,31 @@
                 "category": "After a deep understanding of the design of the data through the ER, we developed organized B/S and P&L.",
                 "image": "project8.png",
                 "url": "https://github.com/marvin-jung/Accounting-Database"
+            },
+            {
+                "title": "Accounting Database",
+                "category": "After a deep understanding of the design of the data through the ER, we developed organized B/S and P&L.",
+                "image": "project9.png",
+                "url": "https://github.com/marvin-jung/Accounting-Database"
+            },       
+            {
+                "title": "Accounting Database",
+                "category": "After a deep understanding of the design of the data through the ER, we developed organized B/S and P&L.",
+                "image": "project10.png",
+                "url": "https://github.com/marvin-jung/Accounting-Database"
+            },
+            {
+                "title": "Accounting Database",
+                "category": "After a deep understanding of the design of the data through the ER, we developed organized B/S and P&L.",
+                "image": "project11.png",
+                "url": "https://github.com/marvin-jung/Accounting-Database"
+            },
+            {
+                "title": "Accounting Database",
+                "category": "After a deep understanding of the design of the data through the ER, we developed organized B/S and P&L.",
+                "image": "project12.png",
+                "url": "https://github.com/marvin-jung/Accounting-Database"
             }
-
         ]
     }
 }
