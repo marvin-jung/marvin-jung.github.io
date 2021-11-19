@@ -4,6 +4,8 @@ To-do
 3. 경력기술서 완료
 4. PCA Analysis - Windows or Mac ?
 5. Develop an Accounting Database
+6. github에서 Google analytics 사용하기 - https://jybaek.github.io/dev/2016/07/04/use-google-analytics/
+7. 부트스트랩 블로그 만들기
 
 Remaining projects
 1. yoshimi_battles_the_pink_robot
