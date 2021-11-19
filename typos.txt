@@ -1,7 +1,9 @@
 To-do
 1. Resume
 2. Hangul Version
-3. 경력기술서
+3. 경력기술서 완료
+4. PCA Analysis - Windows or Mac ?
+5. Develop an Accounting Database
 
 Remaining projects
 1. yoshimi_battles_the_pink_robot
