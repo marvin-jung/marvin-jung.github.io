@@ -138,24 +138,24 @@
             },
             {
                 "title": "Intel Asia Campaign - Catch & Win",
-                "category": "With the linear programming method, Intel’s campaign budget can be well allocated and finalize the plan with optimal results.",
+                "category": "With the linear programming, Intel’s campaign budget which aims to emerging country markets can be well allocated and finalize the plan with optimal results.",
                 "image": "project5.jpg",
                 "url": "https://github.com/marvin-jung/Intel-Asia-Pacific-The-Catch-Win-Campaign"
             },                        
             {
                 "title": "NUS - Visual Data Storytelling",
-                "category": "The dataviz shows NUS overall, employment rate, salary and relevant information to prove NUS is the future for children.",
+                "category": "This data visualization shows NUS conspectus, employment rate and monthly salary for graduates and so on in order to prove NUS is the future for children.",
                 "image": "project6.jpg",
                 "url": "https://github.com/marvin-jung/NUS-Visual-Data-Storytelling"
             },
             {
-                "title": "Windows? or Mac?",
+                "title": "PCA Analysis - Windows? or Mac?",
                 "category": "We analyze the current demographic and behaviors to find Apple's current customers and next steps for future campaigns based on their personality traits.",
                 "image": "project7.png",
                 "url": "https://github.com/marvin-jung/Windows-or-Mac"
             },
             {
-                "title": "Accounting Database",
+                "title": "Presenting the Financial Statement",
                 "category": "After a deep understanding of the design of the accounting entry data through the Entity Relationship (ER) Diagram, we develop the organized B/S and P&L.",
                 "image": "project8.png",
                 "url": "https://github.com/marvin-jung/Accounting-Database"
