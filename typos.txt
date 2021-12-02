@@ -2,20 +2,12 @@ To-do
 1. Resume
 2. Hangul Version
 3. 경력기술서 완료
-4. PCA Analysis - Windows or Mac ?
+4. NUS - Visual Data Storytelling - and so forth 삭제
 5. Develop an Accounting Database
 6. github에서 Google analytics 사용하기 
    - https://jybaek.github.io/dev/2016/07/04/use-google-analytics/
    - https://analytics.google.com/analytics/web/#/a213334616p294158647/admin/streams/table/3058406992
 7. 부트스트랩 블로그 만들기
-
-Remaining projects
-1. yoshimi_battles_the_pink_robot
-2. 직업 만족도 설문 조사 ANOVA 분석
-3. 온라인 잡화 쇼핑몰 마케팅 KPI 대시보드 구축
-4. 월드뱅크 오픈 데이터 EDA 및 Data 시각화
-5. NLP Analysis
-
 
 추가 참고
 1. https://www.styleshout.com/free-templates/ceevee/
