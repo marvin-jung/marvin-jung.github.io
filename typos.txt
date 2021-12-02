@@ -11,3 +11,9 @@ To-do
 3. Google analytics 사용하기
    - https://jybaek.github.io/dev/2016/07/04/use-google-analytics/
    - https://analytics.google.com/analytics/web/#/a213334616p294158647/admin/streams/table/3058406992
+4. These will teach you the essentials of HTML and CSS:
+   - https://marksheet.io/
+   - http://learn.shayhowe.com/html-css/
+5. In addition, if you want to include javascript in your skill-set, you can also check out these tutorials: 
+   - https://www.codecademy.com/learn/introduction-to-javascript
+   - https://javascript.info/
