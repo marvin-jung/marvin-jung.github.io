@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEED 디자인 시스템 분석 — 정지성 Blog</title>
-<meta name="description" content="당근 SEED 디자인 시스템의 토큰 아키텍처를 브라우저에서 실측한 564개 CSS 변수로 분석합니다.">
+<title>브라우저 코스: Lottie Creator로 처음부터 만들기 — 정지성 Blog</title>
+<meta name="description" content="AE 없이 브라우저에서 Lottie를 만드는 전 과정 — SVG 임포트, 키프레임, 이징, 내보내기 전략.">
 <style>
 /* ============================================================
    Design Tokens — seed-design.io 실측값 기반
@@ -258,114 +258,63 @@ body:not(.motion-ready) .reveal { transition: none; }
   <aside class="sidebar">
     <div class="group-label">Analysis</div>
     <nav>
-      <a href="blog.html" class="current">SEED 디자인 시스템 분석</a>
+      <a href="blog.html">SEED 디자인 시스템 분석</a>
     </nav>
     <div class="group-label">Tutorial</div>
     <nav>
       <a href="blog-lottie-tutorial.html">움직이는 이미지의 정체 — Lottie</a>
       <a href="blog-lottie-creation.html">Lottie 만들기 — 경로 개요</a>
       <a href="blog-lottie-ae.html">① 정석: After Effects + Bodymovin</a>
-      <a href="blog-lottie-creator.html">② 브라우저: Lottie Creator</a>
+      <a href="blog-lottie-creator.html" class="current">② 브라우저: Lottie Creator</a>
       <a href="blog-lottie-figma.html">③ 피그마: Figma to Lottie</a>
     </nav>
   </aside>
 
   <article>
-    <div class="breadcrumb"><a href="blog.html">Blog</a> / Analysis</div>
-    <h1>SEED 디자인 시스템 분석</h1>
-    <p class="article-desc">당근 SEED의 토큰 아키텍처를, 문서를 읽는 데 그치지 않고 브라우저에서 직접 실측한 564개 CSS 변수로 해부합니다.</p>
+    <div class="breadcrumb"><a href="blog.html">Blog</a> / Tutorial</div>
+    <h1>브라우저 코스: Lottie Creator로 처음부터 만들기</h1>
+    <p class="article-desc">After Effects 없이, 설치 없이 — 브라우저에서 도형을 그리고 keyframe을 찍어 Lottie를 완성하는 전 과정입니다.</p>
     <div class="article-meta">
-      <span class="meta-chip">Design System</span>
-      <span class="meta-chip">Analysis</span>
-      <span>2026. 8. 1.</span>
-      <span>·</span>
-      <span>8분 읽기</span>
+      <span class="meta-chip">Tutorial</span><span class="meta-chip">Lottie Creator</span><span class="meta-chip">No-AE</span>
+      <span>2026. 8. 1.</span><span>·</span><span>10분 읽기</span>
     </div>
 
-    <div class="hero-banner" aria-hidden="true">
-      <code>$dimension.x4</code>
-      <code>$color.fg.brand</code>
-      <code>$spacing-x.global-gutter</code>
-    </div>
+    <h2 id="b1">시작 전에: 요금 구조 솔직 정리</h2>
+    <p>LottieFiles 계정(무료 가입)으로 lottiefiles.com/lottie-creator에 접속합니다. 무료 플랜은 <strong>파일 생성은 무제한이지만 애니메이션 내보내기가 5회로 제한</strong>됩니다(이후 유료 업그레이드). 전략은 명확합니다 — 실험은 마음껏 하되, <strong>내보내기는 확정본에만</strong> 쓰세요. 데스크톱 브라우저 기준으로 최적화되어 있어 제작은 PC에서 하는 것을 권합니다.</p>
 
-    <h2 id="s1">어떻게 분석했나</h2>
-    <p><a href="https://seed-design.io" style="text-decoration:underline">SEED</a>는 당근(Daangn)의 공식 디자인 시스템입니다. "Seed to Root, Root to Daangn" — 모든 당근 제품이 공유하는 최소 단위의 뿌리를 지향합니다. 이 글은 문서를 요약한 것이 아니라, 실제 사이트를 브라우저에서 열고 <code class="inline">getComputedStyle</code>과 스타일시트 순회로 <strong>런타임에 노출된 564개의 <code class="inline">--seed-*</code> CSS 변수를 전수 추출</strong>해서 쓴 글입니다. 아래 나오는 모든 hex 값과 수치는 그 실측값입니다.</p>
+    <h2 id="b2">새 프로젝트와 캔버스</h2>
+    <p>새 파일을 만들면 캔버스 크기·길이·프레임레이트를 정합니다. 웹 히어로 기준 400×400~800×800, 30fps, 2~4초 루프가 무난합니다. 상단이 도구, 좌측이 레이어, 하단이 타임라인 — 영상 편집기를 써봤다면 낯설지 않은 배치입니다.</p>
 
-    <h2 id="s2">2계층 토큰 구조</h2>
-    <p>SEED 토큰의 핵심 철학은 <strong>"값이 아니라 의미로 관리한다"</strong>입니다. 구조는 명시적인 2단계입니다. <strong>Scale Token</strong>은 무한한 raw 값 중 실제로 쓸 값을 제한하고 이름을 붙입니다(<code class="inline">$dimension.x4 = 16px</code>). <strong>Semantic Token</strong>은 Scale을 조합해 의도를 표현합니다(<code class="inline">$spacing-x.global-gutter → x4</code>). 같은 <code class="inline">#FF6600</code>이라도 브랜드 배경과 브랜드 텍스트는 별도 토큰입니다 — 의미가 다르면 따로 업데이트할 수 있어야 하기 때문입니다.</p>
+    <h2 id="b3">그리기 — 도형·텍스트·SVG 임포트</h2>
+    <p>기본 도형과 텍스트 도구로 캔버스에 직접 그릴 수 있고, 결정적으로 <strong>SVG를 드래그 앤 드롭하면 패스 디테일이 그대로 임포트</strong>됩니다. 즉 Figma나 Illustrator에서 정적 디자인을 SVG로 내보내 가져온 뒤 Creator에서는 움직임만 입히는 분업이 가능합니다 — 실무에서 가장 빠른 워크플로입니다. 기존 Lottie JSON/dotLottie를 불러와 수정할 수도 있습니다.</p>
 
-    <div class="token-diagram">
-      <div class="token-col">
-        <span class="col-label">Semantic Token</span>
-        <span class="token-pill">$spacing-x.between-chips</span>
-        <span class="token-pill"><span class="swatch"></span>$color.fg.brand</span>
-        <span class="token-pill">$spacing-x.global-gutter</span>
-      </div>
-      <div class="token-col">
-        <span class="col-label">Scale Token</span>
-        <span class="token-pill">$dimension.x2</span>
-        <span class="token-pill"><span class="swatch"></span>$color.palette.carrot-600</span>
-        <span class="token-pill">$dimension.x4</span>
-      </div>
-      <div class="token-col">
-        <span class="col-label">Raw Values</span>
-        <span class="token-pill">8px</span>
-        <span class="token-pill"><span class="swatch"></span>#FF6600</span>
-        <span class="token-pill">16px</span>
-      </div>
-    </div>
+    <h2 id="b4">레이어 구조 잡기</h2>
+    <p>애니메이션 전에 구조부터: 각 요소의 <strong>앵커 포인트</strong>(회전·스케일의 축)를 의도한 위치로 옮기고(시계 바늘이라면 축을 바늘 끝으로), 함께 움직여야 하는 요소들은 <strong>페어런팅</strong>으로 부모 레이어에 연결합니다. 복잡해지면 <strong>중첩 씬(nested scenes)</strong>으로 묶어 관리하세요.</p>
 
-    <h2 id="s3">역할 기반 색상 — bg / fg / stroke</h2>
-    <p>색상은 세 가지 역할로 나뉩니다: <code class="inline">bg</code>(배경, 43개), <code class="inline">fg</code>(전경·텍스트, 16개), <code class="inline">stroke</code>(테두리, 16개). 각 역할은 의미 카테고리(brand, neutral, critical, informative, positive, warning, magic, disabled, layer)와 강도 변형(solid/weak, -pressed, -contrast, -muted, -subtle)의 조합입니다. 눌림 상태(<code class="inline">-pressed</code>)까지 토큰으로 정의한 꼼꼼함이 눈에 띕니다.</p>
+    <h2 id="b5">키프레임 찍기</h2>
+    <p>레이어를 선택하고 타임라인에서 시점을 옮긴 뒤 속성(위치/스케일/회전/불투명도) 값을 바꾸면 keyframe이 기록됩니다. 여러 keyframe을 한꺼번에 늘리고 줄이는 <strong>리타임</strong>, 대칭 동작을 만드는 <strong>미러</strong> 기능이 있어 왕복 애니메이션이 빠르게 만들어집니다. 루프 원칙은 여기서도 동일합니다 — 첫 프레임 상태와 끝 프레임 상태를 일치시키세요.</p>
 
-    <table class="tkn-table">
-      <thead><tr><th>토큰</th><th>실측값</th><th>용도</th></tr></thead>
-      <tbody>
-        <tr><td><span class="sw" style="background:#f60"></span>color-bg-brand-solid</td><td>#f60</td><td>당근 브랜드 오렌지</td></tr>
-        <tr><td><span class="sw" style="background:#e14d00"></span>color-bg-brand-solid-pressed</td><td>#e14d00</td><td>브랜드 버튼 눌림</td></tr>
-        <tr><td><span class="sw" style="background:#fa342c"></span>color-bg-critical-solid</td><td>#fa342c</td><td>오류·파괴적 동작</td></tr>
-        <tr><td><span class="sw" style="background:#217cf9"></span>color-bg-informative-solid</td><td>#217cf9</td><td>정보</td></tr>
-        <tr><td><span class="sw" style="background:#079171"></span>color-fg-positive</td><td>#079171</td><td>긍정·성공</td></tr>
-        <tr><td><span class="sw" style="background:#fbdc65"></span>color-bg-warning-solid</td><td>#fbdc65</td><td>주의</td></tr>
-        <tr><td><span class="sw" style="background:#1a1c20"></span>color-fg-neutral</td><td>#1a1c20</td><td>기본 텍스트</td></tr>
-        <tr><td><span class="sw" style="background:#dcdee3"></span>color-stroke-neutral-weak</td><td>#dcdee3</td><td>약한 구분선</td></tr>
-      </tbody>
-    </table>
+    <h2 id="b6">이징 — 그래프 에디터</h2>
+    <p>기본 보간은 리니어라 기계적입니다. keyframe을 선택해 <strong>그래프 에디터</strong>를 열고 커브를 조정하세요: 완만한 S자는 자연스러운 가감속, 목표를 지나쳤다 돌아오는 커브는 오버슈트(탄성), 급격한 커브는 스냅 모션이 됩니다. SEED 같은 시스템이 duration 토큰(d1 50ms~d6 300ms)을 두는 이유가 이 감각의 표준화입니다.</p>
 
-    <p>여기에 역할로 표현하기 어려운 예외를 위한 <strong>팔레트 색상 94개</strong>(각 색 100~1000 명도 스케일, 예: carrot-100 <code class="inline">#fff2ec</code> → carrot-1000 <code class="inline">#471601</code>)가 별도로 존재하고, 매너온도용 <code class="inline">color-manner-*</code> 20개, 배너용 파스텔 10개처럼 <strong>범용 시스템 위에 서비스 고유 토큰을 얹는 확장 패턴</strong>도 보입니다. 접근성 기준으로 WCAG가 아닌 <strong>APCA</strong> 명도 대비를 채택한 것이 차별점입니다.</p>
+    <h2 id="b7">고급 도구</h2>
+    <p>AE의 주력 기법이 대부분 있습니다: <strong>Trim Path</strong>(패스가 그려지는 효과), <strong>Motion Path</strong>(궤적 따라 이동), <strong>마스크·매트</strong>(가림과 리빌), 블렌드 모드. 텍스트 프롬프트로 초안 레이어·keyframe을 생성해주는 <strong>Motion Copilot</strong>도 있어 시작점으로 쓸 만합니다 — 결과물은 실제 레이어라 수동으로 다듬을 수 있습니다.</p>
 
-    <h2 id="s4">유동 타이포그래피</h2>
-    <p>14단계 스케일(t1~t14, 11px~48px)의 각 사이즈는 고정값이 아니라 <code class="inline">clamp()</code> 기반 유동형입니다. 실측된 t1의 정의를 보면:</p>
-    <pre class="code-block"><span class="k">--seed-font-size-t1</span>: clamp(<span class="s">calc(11px * .8)</span>, <span class="s">calc(.6875rem * 1)</span>, <span class="s">calc(11px * 1.5)</span>);
-<span class="k">--seed-font-size-t1-static</span>: <span class="s">11px</span>; <span class="c">/* 고정이 필요할 때 */</span></pre>
-    <p>사용자의 폰트 배율 설정에 0.8~1.5배 범위로 반응합니다. 접근성이 스케일 설계 단계부터 들어가 있는 셈입니다. 폰트 두께는 regular 400 / medium 500 / bold 700 세 단계, 폰트 스택은 OS 시스템 폰트 우선입니다.</p>
+    <h2 id="b8">브랜드 색 입히기</h2>
+    <p>내보내기 전에 색을 브랜드 토큰으로 통일하세요. 이 블로그 기준이라면 오렌지 <code class="inline">#FF6600</code>, 그린 <code class="inline">#079171</code>, 뉴트럴 <code class="inline">#1a1c20</code>. 색을 시스템 토큰에서 가져오면 애니메이션이 UI와 한 몸처럼 보입니다.</p>
 
-    <h2 id="s5">간격·모서리·그림자·모션</h2>
-    <table class="tkn-table">
-      <thead><tr><th>영역</th><th>실측 스케일</th><th>비고</th></tr></thead>
-      <tbody>
-        <tr><td>Spacing</td><td>x0_5(2px) ~ x16(64px)</td><td>+ 문맥형: global-gutter 16px, between-chips 8px</td></tr>
-        <tr><td>Radius</td><td>r0_5(2px) ~ r6(24px), full(9999px)</td><td>–</td></tr>
-        <tr><td>Elevation</td><td>s1 ~ s3</td><td>s1 = 0 1px 4px #00000014</td></tr>
-        <tr><td>Motion</td><td>d1(50ms) ~ d6(0.3s)</td><td>+ pressed-scale, timing-function 7종</td></tr>
-      </tbody>
-    </table>
+    <h2 id="b9">내보내기와 웹 연결</h2>
+    <p>내보내기 형식은 <strong>Lottie JSON</strong>(가장 호환 넓음)과 <strong>dotLottie(.lottie)</strong>(압축 — 파일이 작지만 플레이어가 dotLottie 지원이어야 함) 중 선택합니다. GIF/MP4/WebM 내보내기도 있지만 그건 Lottie의 장점(벡터·경량·제어)을 버리는 것이니 프리뷰 공유용으로만 쓰세요. JSON을 받았다면 웹 삽입은 <a href="blog-lottie-tutorial.html#t5" style="text-decoration:underline">"움직이는 이미지의 정체" 5장</a> 코드 그대로입니다.</p>
 
-    <h2 id="s6">멀티플랫폼 배포</h2>
-    <p>내비게이션에 <strong>React</strong>와 <strong>Lynx</strong>(크로스플랫폼 프레임워크) 구현이 별도로 나뉘어 있고, Breeze 프로젝트, Migration 가이드, LLMs.txt를 제공하는 AI &amp; Tools 섹션까지 갖추고 있습니다. 토큰을 단일 소스로 두고 여러 런타임에 배포하는 구조로, 약 50개 컴포넌트가 문서화되어 있습니다.</p>
-
-    <h2 id="s7">종합 평가</h2>
-    <p>SEED는 (1) 의미 중심 2계층 토큰, (2) 역할+팔레트 이원화 색상, (3) APCA 접근성, (4) clamp 기반 유동 타이포, (5) 멀티 런타임 배포가 핵심인 성숙한 프로덕션 디자인 시스템입니다. 실측하면서 가장 인상적이었던 건 거창한 것이 아니라 <strong>pressed 상태, 모션 duration 6단계 같은 작은 결정들이 전부 토큰으로 봉인되어 있다</strong>는 점이었습니다. 일관성은 그렇게 만들어집니다. 이 블로그와 포트폴리오 자체가 그 실측 토큰으로 지어졌습니다.</p>
-
-    <!-- 은은한 스폰서 슬롯: 페이지당 1개, 본문 종료 후.
-         광고 연결 시 아래 div 내부를 광고 코드로 교체 (상단 CSS 주석 참조) -->
+    <!-- 은은한 스폰서 슬롯: 페이지당 1개, 본문 종료 후 -->
     <div class="sponsor-slot" aria-label="스폰서 영역">
       <div class="label">Sponsored</div>
       <div class="ph">이 자리는 스폰서 영역으로 예약되어 있습니다 — 콘텐츠를 가리지 않는 선에서만 운영합니다.</div>
     </div>
 
     <div class="doc-footer">
-      <a href="blog-lottie-tutorial.html" class="next"><span class="dir">다음 글</span><span class="title">움직이는 이미지의 정체 — Lottie 튜토리얼</span></a>
+      <a href="blog-lottie-ae.html" class="prev"><span class="dir">이전 글</span><span class="title">① 정석: After Effects + Bodymovin</span></a>
+      <a href="blog-lottie-figma.html" class="next"><span class="dir">다음 글</span><span class="title">③ 피그마: Figma to Lottie</span></a>
     </div>
     <p class="last-updated">Last updated on 2026. 8. 1.</p>
   </article>
@@ -373,19 +322,22 @@ body:not(.motion-ready) .reveal { transition: none; }
   <nav class="toc" aria-label="목차">
     <div class="toc-label">On this page</div>
     <ul>
-      <li><a href="#s1">어떻게 분석했나</a></li>
-      <li><a href="#s2">2계층 토큰 구조</a></li>
-      <li><a href="#s3">역할 기반 색상</a></li>
-      <li><a href="#s4">유동 타이포그래피</a></li>
-      <li><a href="#s5">간격·모서리·그림자·모션</a></li>
-      <li><a href="#s6">멀티플랫폼 배포</a></li>
-      <li><a href="#s7">종합 평가</a></li>
+      <li><a href="#b1">요금 구조</a></li>
+      <li><a href="#b2">캔버스 설정</a></li>
+      <li><a href="#b3">그리기·SVG 임포트</a></li>
+      <li><a href="#b4">레이어 구조</a></li>
+      <li><a href="#b5">키프레임</a></li>
+      <li><a href="#b6">이징</a></li>
+      <li><a href="#b7">고급 도구</a></li>
+      <li><a href="#b8">브랜드 색</a></li>
+      <li><a href="#b9">내보내기</a></li>
     </ul>
   </nav>
 
 </div>
 
 <script>
+
 const root = document.documentElement;
 const btn = document.getElementById('themeBtn');
 function applyTheme(t){ root.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
@@ -412,6 +364,7 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   addEventListener('scroll', sweep, { passive: true });
   requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('motion-ready')));
 }
+
 </script>
 </body>
 </html>
