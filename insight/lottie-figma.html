@@ -294,6 +294,12 @@ body:not(.motion-ready) .reveal { transition: none; }
 .fig { background:var(--seed-color-bg-layer-fill); border:1px solid var(--seed-color-stroke-neutral-muted); border-radius:var(--seed-radius-r4); padding:var(--seed-x5); margin:var(--seed-x5) 0 var(--seed-x2); }
 .fig svg { width:100%; height:auto; display:block; }
 .fig-cap { font-size:var(--seed-font-size-t2); color:var(--seed-color-fg-neutral-subtle); margin-bottom:var(--seed-x6); }
+
+/* 모바일 겹침 수정: 1열 스택에서 sticky 사이드바가 본문 위에 뜨는 문제 + 토큰 테이블 열 압착 */
+@media (max-width: 780px){
+  .sidebar { position: static; max-height: none; overflow-y: visible; }
+  article .tkn-table th, article .tkn-table td { white-space: nowrap; }
+}
 </style>
 </head>
 <body>
