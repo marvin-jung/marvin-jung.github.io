@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>움직이는 이미지의 정체 — Lottie 튜토리얼 — 정지성 Blog</title>
+<meta name="description" content="seed-design.io의 움직이는 그래픽을 DOM 해부로 규명하고, Lottie로 직접 만드는 튜토리얼. 라이브 데모 포함.">
+<style>
+/* ============================================================
+   Design Tokens — seed-design.io 실측값 기반
+   ============================================================ */
+:root {
+  --seed-color-bg-brand-solid: #f60;
+  --seed-color-bg-brand-solid-pressed: #e14d00;
+  --seed-color-bg-brand-weak: #fff2ec;
+  --seed-color-bg-brand-weak-pressed: #ffe8db;
+  --seed-color-bg-layer-default: #fff;
+  --seed-color-bg-layer-fill: #f7f8f9;
+  --seed-color-bg-layer-basement: #f3f4f5;
+  --seed-color-banner-yellow: #fffae1;
+  --seed-color-fg-neutral: #1a1c20;
+  --seed-color-fg-neutral-muted: #555d6d;
+  --seed-color-fg-neutral-subtle: #868b94;
+  --seed-color-fg-brand: #f60;
+  --seed-color-fg-brand-contrast: #e14d00;
+  --seed-color-stroke-neutral-weak: #dcdee3;
+  --seed-color-stroke-neutral-muted: #00000010;
+  --seed-color-stroke-focus-ring: #5e98fe;
+  --seed-color-palette-carrot-300: #ffd5c0;
+  --seed-color-palette-carrot-500: #ff9364;
+
+  --fs-min: .8; --fs-mul: 1; --fs-max: 1.5;
+  --seed-font-size-t2:  clamp(calc(12px * var(--fs-min)), calc(.75rem   * var(--fs-mul)), calc(12px * var(--fs-max)));
+  --seed-font-size-t3:  clamp(calc(13px * var(--fs-min)), calc(.8125rem * var(--fs-mul)), calc(13px * var(--fs-max)));
+  --seed-font-size-t4:  clamp(calc(14px * var(--fs-min)), calc(.875rem  * var(--fs-mul)), calc(14px * var(--fs-max)));
+  --seed-font-size-t5:  clamp(calc(16px * var(--fs-min)), calc(1rem     * var(--fs-mul)), calc(16px * var(--fs-max)));
+  --seed-font-size-t6:  clamp(calc(18px * var(--fs-min)), calc(1.125rem * var(--fs-mul)), calc(18px * var(--fs-max)));
+  --seed-font-size-t8:  clamp(calc(22px * var(--fs-min)), calc(1.375rem * var(--fs-mul)), calc(22px * var(--fs-max)));
+  --seed-font-size-t13: clamp(calc(40px * var(--fs-min)), calc(2.5rem   * var(--fs-mul)), calc(40px * var(--fs-max)));
+  --seed-font-weight-regular: 400;
+  --seed-font-weight-medium: 500;
+  --seed-font-weight-bold: 700;
+
+  --seed-x1: 4px; --seed-x2: 8px; --seed-x3: 12px; --seed-x4: 16px;
+  --seed-x5: 20px; --seed-x6: 24px; --seed-x8: 32px; --seed-x10: 40px;
+  --seed-x14: 56px; --seed-x16: 64px;
+  --seed-radius-r2: 8px; --seed-radius-r3: 12px; --seed-radius-r4: 16px;
+  --seed-radius-full: 9999px;
+  --seed-shadow-s1: 0px 1px 4px 0px #00000014;
+  --seed-duration-d3: .15s;
+  --seed-duration-d6: .3s;
+  --seed-scale-pressed: .97;
+}
+[data-theme="dark"] {
+  --seed-color-bg-layer-default: #1a1c20;
+  --seed-color-bg-layer-fill: #212429;
+  --seed-color-bg-layer-basement: #17191c;
+  --seed-color-bg-brand-weak: #3a2115;
+  --seed-color-bg-brand-weak-pressed: #47270f;
+  --seed-color-banner-yellow: #332e15;
+  --seed-color-fg-neutral: #f3f4f5;
+  --seed-color-fg-neutral-muted: #b0b3ba;
+  --seed-color-fg-neutral-subtle: #868b94;
+  --seed-color-fg-brand: #ff9364;
+  --seed-color-stroke-neutral-weak: #33373e;
+  --seed-color-stroke-neutral-muted: #ffffff14;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  background: var(--seed-color-bg-layer-default);
+  color: var(--seed-color-fg-neutral);
+  font-size: var(--seed-font-size-t5);
+  line-height: 1.7;
+  transition: background var(--seed-duration-d6), color var(--seed-duration-d6);
+}
+::selection { background: var(--seed-color-palette-carrot-300); color: #1a1c20; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--seed-color-stroke-focus-ring); outline-offset: 2px; border-radius: var(--seed-radius-r2); }
+
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: color-mix(in srgb, var(--seed-color-bg-layer-default) 82%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--seed-color-stroke-neutral-muted);
+}
+.nav {
+  max-width: 1280px; margin: 0 auto; padding: 0 var(--seed-x4);
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--seed-x14);
+}
+.nav .logo { font-weight: var(--seed-font-weight-bold); font-size: var(--seed-font-size-t6); display: flex; align-items: center; gap: var(--seed-x2); }
+.logo-dot { width: 10px; height: 10px; border-radius: var(--seed-radius-full); background: var(--seed-color-bg-brand-solid); display: inline-block; }
+.nav ul { display: flex; gap: var(--seed-x6); list-style: none; align-items: center; }
+.nav ul a { font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-muted); font-weight: var(--seed-font-weight-medium); transition: color var(--seed-duration-d3); }
+.nav ul a:hover, .nav ul a.active { color: var(--seed-color-fg-neutral); }
+.theme-toggle {
+  border: 1px solid var(--seed-color-stroke-neutral-weak);
+  background: var(--seed-color-bg-layer-default); color: var(--seed-color-fg-neutral);
+  width: 36px; height: 36px; border-radius: var(--seed-radius-full);
+  cursor: pointer; font-size: 15px; line-height: 1;
+  transition: transform var(--seed-duration-d3);
+}
+.theme-toggle:active { transform: scale(var(--seed-scale-pressed)); }
+
+
+/* ── mobile nav (SEED docs 실측: 968px↓ 64px bar + 40px 원형 버튼 + 우측 슬라이드 패널) ── */
+.nav > ul { margin-left: auto; margin-right: var(--seed-x6); }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-toggle {
+  display: none; width: 40px; height: 40px; border-radius: var(--seed-radius-full);
+  border: none; cursor: pointer; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.047); color: var(--seed-color-fg-neutral);
+  transition: background var(--seed-duration-d3);
+}
+[data-theme="dark"] .nav-toggle { background: rgba(255,255,255,.08); }
+.nav-toggle svg { width: 24px; height: 24px; display: block; }
+.mnav-backdrop {
+  position: fixed; inset: 0; z-index: 1190; background: rgba(0,0,0,.455);
+  opacity: 0; pointer-events: none; transition: opacity var(--seed-duration-d6);
+}
+.mnav {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 100%; z-index: 1200;
+  background: var(--seed-color-bg-layer-default); color: var(--seed-color-fg-neutral);
+  transform: translateX(100%);
+  transition: transform var(--seed-duration-d6) cubic-bezier(.03,.4,.1,1);
+  display: flex; flex-direction: column; overflow-y: auto; padding-bottom: var(--seed-x8);
+}
+body.mnav-open .mnav { transform: translateX(0); }
+body.mnav-open .mnav-backdrop { opacity: 1; pointer-events: auto; }
+body.mnav-open { overflow: hidden; }
+.mnav-head { min-height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; }
+.mnav-head .logo { font-weight: var(--seed-font-weight-bold); font-size: var(--seed-font-size-t6); display: flex; align-items: center; gap: var(--seed-x2); }
+.mnav ul { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0 16px; margin: 0; }
+.mnav ul a {
+  display: block; font-size: 22px; font-weight: 400; line-height: 1.4;
+  color: var(--seed-color-fg-neutral); padding: 4px;
+}
+.mnav ul a.current { color: var(--seed-color-fg-brand-contrast); font-weight: var(--seed-font-weight-medium); }
+.mnav .mnav-group { font-size: 22px; font-weight: 700; line-height: 40px; padding: 0 20px; margin-top: var(--seed-x5); }
+@media (max-width: 780px) {
+  .nav { height: var(--seed-x16); }
+  .nav > ul { display: none; }
+  .nav-toggle { display: inline-flex; }
+  .theme-toggle { width: 40px; height: 40px; border: none; background: rgba(0,0,0,.047); }
+  [data-theme="dark"] .theme-toggle { background: rgba(255,255,255,.08); }
+}
+
+.doc-layout {
+  max-width: 1400px; margin: 0 auto;
+  display: grid; grid-template-columns: 240px minmax(0, 1fr) 210px;
+  gap: var(--seed-x10);
+  padding: var(--seed-x8) var(--seed-x4) var(--seed-x16);
+}
+@media (max-width: 1080px){ .doc-layout { grid-template-columns: 220px minmax(0,1fr); } .toc { display:none; } }
+@media (max-width: 780px){ .doc-layout { grid-template-columns: minmax(0,1fr); } article table { display: block; overflow-x: auto; } .hero-banner code { white-space: normal; word-break: break-all; } }
+
+.sidebar { position: sticky; top: calc(var(--seed-x14) + var(--seed-x6)); align-self: start; max-height: calc(100vh - 120px); overflow-y: auto; }
+.sidebar .group-label {
+  font-size: var(--seed-font-size-t2); font-weight: var(--seed-font-weight-bold);
+  color: var(--seed-color-fg-neutral-subtle);
+  text-transform: uppercase; letter-spacing: .06em;
+  padding: 0 var(--seed-x3); margin-bottom: var(--seed-x2);
+}
+.sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--seed-x6); }
+.sidebar nav a {
+  font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-muted);
+  padding: var(--seed-x2) var(--seed-x3); border-radius: var(--seed-radius-r2);
+  transition: background var(--seed-duration-d3), color var(--seed-duration-d3);
+}
+.sidebar nav a:hover { background: var(--seed-color-bg-layer-fill); color: var(--seed-color-fg-neutral); }
+.sidebar nav a.current { background: var(--seed-color-bg-layer-fill); color: var(--seed-color-fg-neutral); font-weight: var(--seed-font-weight-medium); }
+
+.breadcrumb { font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-subtle); margin-bottom: var(--seed-x4); }
+article h1 { font-size: var(--seed-font-size-t13); font-weight: var(--seed-font-weight-bold); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: var(--seed-x3); }
+.article-desc { font-size: 16px; color: var(--seed-color-fg-neutral-muted); margin-bottom: var(--seed-x6); }
+.article-meta { display: flex; gap: var(--seed-x3); align-items: center; flex-wrap: wrap; font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-subtle); margin-bottom: var(--seed-x6); }
+.meta-chip { background: var(--seed-color-bg-brand-weak); color: var(--seed-color-fg-brand-contrast); font-weight: var(--seed-font-weight-medium); padding: 2px var(--seed-x3); border-radius: var(--seed-radius-full); font-size: var(--seed-font-size-t2); }
+.hero-banner { background: var(--seed-color-banner-yellow); border-radius: var(--seed-radius-r4); padding: var(--seed-x10) var(--seed-x8); display: flex; flex-direction: column; gap: var(--seed-x3); overflow: hidden; margin-bottom: var(--seed-x8); }
+.hero-banner code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--seed-font-size-t8); font-weight: var(--seed-font-weight-bold); color: var(--seed-color-fg-brand); white-space: nowrap; }
+.hero-banner code:nth-child(2) { color: var(--seed-color-fg-brand-contrast); }
+.hero-banner code:nth-child(3) { color: var(--seed-color-palette-carrot-500); }
+
+article h2 { font-size: 24px; font-weight: 500; letter-spacing: -0.01em; margin: var(--seed-x10) 0 var(--seed-x4); scroll-margin-top: 100px; }
+article p { color: var(--seed-color-fg-neutral-muted); margin-bottom: var(--seed-x4); font-size: 16px; line-height: 28px; }
+article strong { color: var(--seed-color-fg-neutral); }
+article code.inline {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--seed-color-bg-layer-fill);
+  border: 1px solid var(--seed-color-stroke-neutral-muted);
+  padding: 1px var(--seed-x2); border-radius: var(--seed-radius-r2);
+  color: var(--seed-color-fg-neutral);
+}
+
+/* 표 — 실측 토큰 표 */
+.tkn-table { width: 100%; border-collapse: collapse; font-size: var(--seed-font-size-t3); margin: var(--seed-x5) 0 var(--seed-x6); }
+.tkn-table th { text-align: left; font-weight: var(--seed-font-weight-bold); color: var(--seed-color-fg-neutral-subtle); font-size: var(--seed-font-size-t2); text-transform: uppercase; letter-spacing: .04em; padding: var(--seed-x2) var(--seed-x3); border-bottom: 1px solid var(--seed-color-stroke-neutral-weak); }
+.tkn-table td { padding: var(--seed-x2) var(--seed-x3); border-bottom: 1px solid var(--seed-color-stroke-neutral-muted); color: var(--seed-color-fg-neutral-muted); }
+.tkn-table td:first-child { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--seed-color-fg-neutral); white-space: nowrap; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--seed-color-stroke-neutral-muted); vertical-align: -1px; margin-right: var(--seed-x2); }
+
+/* 코드 블록 */
+pre.code-block {
+  background: #17191c; color: #e8eaed;
+  border-radius: var(--seed-radius-r3);
+  padding: var(--seed-x5) var(--seed-x6);
+  overflow-x: auto; margin: var(--seed-x5) 0 var(--seed-x6);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--seed-font-size-t3); line-height: 1.6;
+  border: 1px solid var(--seed-color-stroke-neutral-muted);
+}
+pre.code-block .c { color: #868b94; } /* 주석 */
+pre.code-block .k { color: #ff9364; } /* 키워드/토큰 */
+pre.code-block .s { color: #85b8fd; } /* 문자열 */
+
+.token-diagram {
+  background: var(--seed-color-bg-layer-fill);
+  border: 1px solid var(--seed-color-stroke-neutral-muted);
+  border-radius: var(--seed-radius-r4);
+  padding: var(--seed-x6); margin: var(--seed-x6) 0;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--seed-x4);
+  font-size: var(--seed-font-size-t3);
+}
+@media (max-width: 640px){ .token-diagram { grid-template-columns: 1fr; } }
+.token-col { display: flex; flex-direction: column; gap: var(--seed-x3); }
+.token-col .col-label { font-weight: var(--seed-font-weight-bold); font-size: var(--seed-font-size-t2); color: var(--seed-color-fg-neutral-subtle); text-transform: uppercase; letter-spacing: .05em; }
+.token-pill {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--seed-color-bg-layer-default);
+  border: 1px solid var(--seed-color-stroke-neutral-weak);
+  border-radius: var(--seed-radius-r3);
+  padding: var(--seed-x2) var(--seed-x3);
+  display: inline-flex; align-items: center; gap: var(--seed-x2);
+  box-shadow: var(--seed-shadow-s1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.swatch { width: 12px; height: 12px; border-radius: var(--seed-radius-full); background: var(--seed-color-bg-brand-solid); flex-shrink: 0; }
+
+/* ---- 은은한 스폰서 슬롯 ----
+   원칙: 페이지당 1개 · 본문 종료 후 배치 · 콘텐츠 카드와 동일한 시각 언어
+   고정 min-height로 레이아웃 흔들림(CLS) 방지 · 애니메이션/추적 스크립트 없음
+   실제 광고 연결: 아래 주석의 코드 스니펫을 이 div 안에 넣으면 됩니다.
+   - Kakao AdFit: <ins class="kakao_ad_area" ... data-ad-unit="..."> + ba.min.js
+   - Google AdSense: 수동 디스플레이 광고 1유닛 (자동 광고는 켜지 말 것 — 난잡해짐)
+   - EthicalAds: div[data-ea-publisher][data-ea-type="text"] + client.js
+*/
+.sponsor-slot {
+  margin-top: var(--seed-x10);
+  border: 1px dashed var(--seed-color-stroke-neutral-weak);
+  border-radius: var(--seed-radius-r3);
+  background: var(--seed-color-bg-layer-fill);
+  min-height: 90px;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: var(--seed-x4) var(--seed-x5);
+}
+.sponsor-slot .label { font-size: 10px; font-weight: var(--seed-font-weight-medium); color: var(--seed-color-fg-neutral-subtle); text-transform: uppercase; letter-spacing: .08em; margin-bottom: var(--seed-x1); }
+.sponsor-slot .ph { font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-subtle); }
+
+.doc-footer { display: flex; justify-content: space-between; gap: var(--seed-x4); margin-top: var(--seed-x8); padding-top: var(--seed-x6); border-top: 1px solid var(--seed-color-stroke-neutral-muted); }
+.doc-footer a { flex: 1; max-width: 48%; border: 1px solid var(--seed-color-stroke-neutral-weak); border-radius: var(--seed-radius-r3); padding: var(--seed-x4) var(--seed-x5); transition: background var(--seed-duration-d3); }
+.doc-footer a:hover { background: var(--seed-color-bg-layer-fill); }
+.doc-footer .dir { font-size: var(--seed-font-size-t2); color: var(--seed-color-fg-neutral-subtle); display: block; }
+.doc-footer .title { font-size: var(--seed-font-size-t4); font-weight: var(--seed-font-weight-medium); }
+.doc-footer a.next { text-align: right; margin-left: auto; }
+.last-updated { font-size: var(--seed-font-size-t2); color: var(--seed-color-fg-neutral-subtle); margin-top: var(--seed-x6); }
+
+.toc { position: sticky; top: calc(var(--seed-x14) + var(--seed-x6)); align-self: start; font-size: var(--seed-font-size-t2); }
+.toc .toc-label { color: var(--seed-color-fg-neutral-subtle); font-weight: var(--seed-font-weight-medium); margin-bottom: var(--seed-x3); }
+/* SEED(Fumadocs clerk) 방식: 연한 레일 + 진한 지렁이 마커(위/아래 가장자리 개별 추적) */
+.toc ul { list-style: none; position: relative; }
+.toc li a { display: block; color: var(--seed-color-fg-neutral-subtle); padding: var(--seed-x1) 0 var(--seed-x1) 20px; transition: color var(--seed-duration-d3); }
+.toc li.lv3 a { padding-left: 32px; } /* SEED 실측: h2 20px / h3 32px */
+article h3 { scroll-margin-top: 100px; }
+.toc li a:hover { color: var(--seed-color-fg-neutral); }
+.toc li a.active { color: var(--seed-color-fg-neutral); font-weight: var(--seed-font-weight-medium); }
+.toc .rail, .toc .worm { position: absolute; left: 6px; width: 2px; border-radius: 2px; pointer-events: none; }
+.toc .rail { top: 0; height: 100%; background: var(--seed-color-stroke-neutral-subtle, #0000000c); }
+.toc .worm { top: 0; height: 0; background: var(--seed-color-fg-neutral); will-change: top, height; }
+
+.reveal { opacity: 0; transform: translateY(1rem); transition: opacity .5s ease, transform .5s ease; transition-delay: var(--reveal-delay, 0s); }
+.reveal.in { opacity: 1; transform: translateY(0); }
+body:not(.motion-ready) .reveal { transition: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+/* 튜토리얼 예제: 결과물 데모 박스 + 도식 */
+.demo-box { display:flex; gap:var(--seed-x4); align-items:center; flex-wrap:wrap; margin:var(--seed-x5) 0 var(--seed-x2); }
+.demo-stage { width:200px; aspect-ratio:1/1; background:var(--seed-color-bg-brand-weak); border-radius:var(--seed-radius-r4); overflow:hidden; line-height:0; }
+.demo-btn { border:1px solid var(--seed-color-stroke-neutral-weak); background:var(--seed-color-bg-layer-default); color:var(--seed-color-fg-neutral); padding:var(--seed-x2) var(--seed-x5); border-radius:var(--seed-radius-full); cursor:pointer; font-size:var(--seed-font-size-t3); transition:transform var(--seed-duration-d3); }
+.demo-btn:active { transform:scale(var(--seed-scale-pressed)); }
+.fig { background:var(--seed-color-bg-layer-fill); border:1px solid var(--seed-color-stroke-neutral-muted); border-radius:var(--seed-radius-r4); padding:var(--seed-x5); margin:var(--seed-x5) 0 var(--seed-x2); }
+.fig svg { width:100%; height:auto; display:block; }
+.fig-cap { font-size:var(--seed-font-size-t2); color:var(--seed-color-fg-neutral-subtle); margin-bottom:var(--seed-x6); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="/"><span class="logo-dot"></span>정지성</a>
+    <ul>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/insight/" class="active">Insight</a></li>
+      <li><a href="/essay/">Essay</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환" id="themeBtn">☾</button>
+      <button class="nav-toggle" aria-label="메뉴" onclick="document.body.classList.add('mnav-open')"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 4C2 3.44772 2.44772 3 3 3H21C21.5523 3 22 3.44772 22 4C22 4.55228 21.5523 5 21 5H3C2.44772 5 2 4.55228 2 4Z" fill="currentColor"/><path d="M2 12C2 11.4477 2.44772 11 3 11H21C21.5523 11 22 11.4477 22 12C22 12.5523 21.5523 13 21 13H3C2.44772 13 2 12.5523 2 12Z" fill="currentColor"/><path d="M2 20C2 19.4477 2.44772 19 3 19H21C21.5523 19 22 19.4477 22 20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20Z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="mnav-backdrop" onclick="document.body.classList.remove('mnav-open')"></div>
+<div class="mnav" id="mnav" aria-label="모바일 메뉴">
+  <div class="mnav-head">
+    <a class="logo" href="/"><span class="logo-dot"></span>정지성</a>
+    <button class="nav-toggle" style="display:inline-flex" aria-label="메뉴 닫기" onclick="document.body.classList.remove('mnav-open')"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+  </div>
+  <ul>
+    <li><a href="/#projects">Projects</a></li>
+    <li><a href="/insight/">Insight</a></li>
+    <li><a href="/essay/">Essay</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+  <div class="mnav-group">Insight</div>
+  <ul>
+      <li><a href="/insight/seed-analysis.html">SEED 디자인 시스템 해부</a></li>
+      <li><a href="/insight/lottie-tutorial.html" class="current">움직이는 이미지의 정체 — Lottie</a></li>
+      <li><a href="/insight/lottie-creation.html">Lottie 만들기 — 경로 개요</a></li>
+      <li><a href="/insight/lottie-ae.html">① 정석: After Effects + Bodymovin</a></li>
+      <li><a href="/insight/lottie-creator.html">② 브라우저: Lottie Creator</a></li>
+      <li><a href="/insight/lottie-figma.html">③ 피그마: Figma to Lottie</a></li>
+  </ul>
+</div>
+
+
+<div class="doc-layout">
+
+  <aside class="sidebar">
+    <div class="group-label">Analysis</div>
+    <nav>
+      <a href="/insight/seed-analysis.html">SEED 디자인 시스템 해부</a>
+    </nav>
+    <div class="group-label">Tutorial</div>
+    <nav>
+      <a href="/insight/lottie-tutorial.html" class="current">움직이는 이미지의 정체 — Lottie</a>
+      <a href="/insight/lottie-creation.html">Lottie 만들기 — 경로 개요</a>
+      <a href="/insight/lottie-ae.html">① 정석: After Effects + Bodymovin</a>
+      <a href="/insight/lottie-creator.html">② 브라우저: Lottie Creator</a>
+      <a href="/insight/lottie-figma.html">③ 피그마: Figma to Lottie</a>
+    </nav>
+  </aside>
+
+  <article>
+    <div class="breadcrumb"><a href="/insight/seed-analysis.html">Blog</a> / Tutorial</div>
+    <h1>움직이는 이미지의 정체 — Lottie 튜토리얼</h1>
+    <p class="article-desc">seed-design.io 랜딩의 살아 움직이는 그래픽은 동영상도 GIF도 아니었습니다. DOM을 해부해서 정체를 밝히고, 같은 것을 직접 만들어 봅니다.</p>
+    <div class="article-meta">
+      <span class="meta-chip">Tutorial</span>
+      <span class="meta-chip">Lottie</span>
+      <span class="meta-chip">Motion</span>
+      <span>2026. 8. 1.</span>
+      <span>·</span>
+      <span>10분 읽기</span>
+    </div>
+
+    <h2 id="t1">궁금증에서 시작</h2>
+    <p>seed-design.io 첫 화면에는 부드럽게 움직이는 일러스트들이 있습니다. 흔히 떠올리는 후보는 넷입니다: <code class="inline">&lt;video&gt;</code>, GIF/애니메이션 WebP, CSS 애니메이션, 그리고 Lottie. 추측 대신 브라우저 콘솔에서 하나씩 배제해 봤습니다.</p>
+
+    <h2 id="t2">탐정 노트 — 하나씩 배제하기</h2>
+    <p><strong>1) 동영상?</strong> <code class="inline">document.querySelectorAll('video')</code> → 0개. 심지어 우하단의 "동영상 재생" 버튼을 눌러도 video 요소는 끝까지 생기지 않았습니다.</p>
+    <p><strong>2) 움직이는 이미지 파일?</strong> WebP가 애니메이션인지는 파일 안에 <code class="inline">ANIM</code> 청크가 있는지로 판별할 수 있습니다:</p>
+    <pre class="code-block"><span class="c">// 콘솔에서: webp가 애니메이션인지 바이너리로 검사</span>
+<span class="k">const</span> buf = <span class="k">await</span> fetch(<span class="s">'/landing/showcase/motion.webp'</span>).then(r =&gt; r.arrayBuffer());
+<span class="k">const</span> bytes = <span class="k">new</span> Uint8Array(buf);
+<span class="k">const</span> hasAnim = bytes.some((_, i) =&gt;
+  bytes[i] === 65 &amp;&amp; bytes[i+1] === 78 &amp;&amp; bytes[i+2] === 73 &amp;&amp; bytes[i+3] === 77); <span class="c">// "ANIM"</span>
+<span class="c">// 결과: false — 전부 2~20KB짜리 정지 이미지(포스터)였다</span></pre>
+    <p><strong>3) CSS 애니메이션?</strong> 스타일시트의 <code class="inline">@keyframes</code>를 전수 조사하니 스켈레톤 시머, 프로그레스 서클 같은 컴포넌트용뿐, 랜딩 그래픽용은 없었습니다.</p>
+
+    <h2 id="t3">정답 — Lottie</h2>
+    <p>결정적 증거는 세 가지였습니다. 전역에 <code class="inline">window.lottie</code> 객체가 존재하고, 네트워크 리소스에 <code class="inline">/landing/intro-parallax.json</code> 등 애니메이션 JSON 4개가 로드되며, 움직이는 영역의 DOM이 <code class="inline">&lt;svg&gt;</code> + <code class="inline">translate3d</code> 인라인 스타일 + 98개의 그룹 — 전형적인 <strong>lottie-web SVG 렌더러</strong> 시그니처였습니다. 정지 WebP들은 Lottie 로딩 전에 깔리는 포스터였고, "동영상 재생/일시정지" 버튼은 Lottie 재생을 전역으로 켜고 끄는 <strong>접근성 컨트롤</strong>이었습니다.</p>
+
+    <h2 id="t4">Lottie 파이프라인</h2>
+    <p>Lottie는 After Effects 애니메이션을 JSON으로 내보내(Bodymovin 플러그인) 웹/앱에서 벡터로 재생하는 포맷입니다. 파일이 수 KB로 작고, SVG라 어떤 해상도에서도 선명하며, 코드로 재생을 제어할 수 있습니다. AE가 없다면 <a href="https://lottiefiles.com" style="text-decoration:underline">LottieFiles</a>의 무료 에셋·에디터를 쓰거나, 단순한 도형 애니메이션은 아래처럼 JSON을 손으로 쓸 수도 있습니다.</p>
+
+    <h2 id="t5">웹에 넣기 + 라이브 데모</h2>
+    <pre class="code-block"><span class="c">&lt;!-- 1. 라이브러리 (svg 전용 light 빌드가 가볍다) --&gt;</span>
+&lt;script src=<span class="s">"https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie_light.min.js"</span>&gt;&lt;/script&gt;
+
+<span class="c">// 2. 로드 — 포스터 이미지를 배경으로 깔아두면 로딩 공백이 없다</span>
+<span class="k">const</span> anim = lottie.loadAnimation({
+  container: document.getElementById(<span class="s">'hero-anim'</span>),
+  renderer: <span class="s">'svg'</span>, loop: <span class="k">true</span>, autoplay: <span class="k">true</span>,
+  path: <span class="s">'my-animation.json'</span>  <span class="c">// 또는 animationData: {...} 인라인</span>
+});
+
+<span class="c">// 3. 제어</span>
+anim.pause(); anim.play(); anim.goToAndStop(frame); <span class="c">// 스크롤 연동은 진행률→frame 매핑</span></pre>
+
+    <p>아래는 이 페이지에서 실제로 재생 중인 데모입니다 — 외부 JSON 없이 3개 레이어(맥박 치는 씨앗, 퍼지는 리플, 궤도 점)를 손으로 쓴 애니메이션 데이터입니다:</p>
+
+    <div style="display:flex; gap:var(--seed-x4); align-items:center; flex-wrap:wrap; margin:var(--seed-x5) 0 var(--seed-x6);">
+      <div id="demoAnim" style="width:220px; aspect-ratio:1/1; background:var(--seed-color-bg-brand-weak); border-radius:var(--seed-radius-r4); overflow:hidden; line-height:0;" role="img" aria-label="Lottie 데모 애니메이션"></div>
+      <button id="demoBtn" style="border:1px solid var(--seed-color-stroke-neutral-weak); background:var(--seed-color-bg-layer-default); color:var(--seed-color-fg-neutral); padding:var(--seed-x2) var(--seed-x5); border-radius:var(--seed-radius-full); cursor:pointer; font-size:var(--seed-font-size-t3);">❚❚ 일시정지</button>
+    </div>
+
+    <p>레이어 하나의 뼈대는 이렇게 생겼습니다 — <code class="inline">ks</code>가 트랜스폼(o=불투명도, r=회전, p=위치, s=스케일), <code class="inline">shapes</code>가 도형입니다:</p>
+    <pre class="code-block">{ <span class="s">"fr"</span>: 30, <span class="s">"ip"</span>: 0, <span class="s">"op"</span>: 90,  <span class="c">// 30fps, 0~90프레임(3초 루프)</span>
+  <span class="s">"layers"</span>: [{ <span class="s">"ty"</span>: 4,              <span class="c">// 도형 레이어</span>
+    <span class="s">"ks"</span>: { <span class="s">"s"</span>: { <span class="s">"a"</span>: 1, <span class="s">"k"</span>: [   <span class="c">// 스케일 keyframe: 88% → 106% → 88%</span>
+      { <span class="s">"t"</span>: 0,  <span class="s">"s"</span>: [88,88,100] },
+      { <span class="s">"t"</span>: 45, <span class="s">"s"</span>: [106,106,100] },
+      { <span class="s">"t"</span>: 90, <span class="s">"s"</span>: [88,88,100] } ] } },
+    <span class="s">"shapes"</span>: [{ <span class="s">"ty"</span>: <span class="s">"el"</span> }, { <span class="s">"ty"</span>: <span class="s">"fl"</span>, <span class="s">"c"</span>: {<span class="s">"k"</span>:[1,.4,0,1]} }] <span class="c">// 원 + 주황 채움</span>
+  }] }</pre>
+
+    <h2 id="t6">접근성 — SEED가 가르쳐준 것</h2>
+    <p>SEED의 플로팅 재생/정지 버튼은 장식이 아니라 움직임에 민감한 사용자를 위한 배려입니다. 두 가지를 함께 구현해야 완성입니다:</p>
+    <pre class="code-block"><span class="c">// OS의 '모션 감소' 설정을 존중 — 켜져 있으면 정지 상태로 시작</span>
+<span class="k">const</span> reduced = matchMedia(<span class="s">'(prefers-reduced-motion: reduce)'</span>).matches;
+lottie.loadAnimation({ ..., autoplay: !reduced });
+
+<span class="c">// 전역 토글 버튼 — aria-label도 상태에 맞게 갱신</span>
+btn.onclick = () =&gt; { anim.isPaused ? anim.play() : anim.pause(); };</pre>
+
+    <h2 id="t7">보너스 — 스크롤 등장 효과와 두 가지 함정</h2>
+    <p>SEED 랜딩의 섹션 fade-up은 IntersectionObserver + CSS 트랜지션(실측값: <code class="inline">.5s</code>, <code class="inline">translateY(1rem)</code>)이면 충분합니다. 다만 직접 만들며 실제로 밟은 함정 두 개를 공유합니다.</p>
+    <p><strong>함정 1 — 빠른 스크롤은 콜백을 건너뛴다.</strong> 휠을 세게 굴려 요소를 한 번에 지나치면 IO 콜백이 생략되어 영영 안 나타날 수 있습니다. 스크롤 스윕 폴백을 두세요:</p>
+    <pre class="code-block">addEventListener(<span class="s">'scroll'</span>, () =&gt; targets.forEach(el =&gt; {
+  <span class="k">if</span> (!el.classList.contains(<span class="s">'in'</span>) &amp;&amp; el.getBoundingClientRect().top &lt; innerHeight)
+    el.classList.add(<span class="s">'in'</span>);
+}), { passive: <span class="k">true</span> });</pre>
+    <p><strong>함정 2 — 로드 직후 역방향 페이드.</strong> JS로 숨김 클래스를 붙이는 순간 보임→숨김 트랜지션이 한 번 재생되어 깜빡입니다. 첫 두 프레임은 트랜지션을 꺼 두면 해결됩니다:</p>
+    <pre class="code-block"><span class="c">/* CSS */</span> body:not(.motion-ready) .reveal { transition: none; }
+<span class="c">/* JS  */</span> requestAnimationFrame(() =&gt; requestAnimationFrame(() =&gt;
+  document.body.classList.add(<span class="s">'motion-ready'</span>)));</pre>
+
+    <h2 id="t8">마무리</h2>
+    <p>정리하면 SEED의 "움직이는 이미지"는 <strong>Lottie(SVG 렌더) + 정지 WebP 포스터 + 전역 재생 컨트롤 + GSAP 스크롤 연출</strong>의 조합입니다. 이 포트폴리오의 메인 히어로가 정확히 같은 방식으로 만들어져 있으니, 뷰소스로 전체 구현을 확인할 수 있습니다.</p>
+
+    <!-- 은은한 스폰서 슬롯: 페이지당 1개, 본문 종료 후 -->
+    <div class="sponsor-slot" aria-label="스폰서 영역">
+      <div class="label">Sponsored</div>
+      <div class="ph">이 자리는 스폰서 영역으로 예약되어 있습니다 — 콘텐츠를 가리지 않는 선에서만 운영합니다.</div>
+    </div>
+
+    <div class="doc-footer">
+      <a href="/insight/seed-analysis.html" class="prev"><span class="dir">이전 글</span><span class="title">SEED 디자인 시스템 분석</span></a>
+      <a href="/insight/lottie-creation.html" class="next"><span class="dir">다음 글</span><span class="title">Lottie 직접 만들기 — 도구별 가이드</span></a>
+    </div>
+    <p class="last-updated">Last updated on 2026. 8. 1.</p>
+  </article>
+
+  <nav class="toc" aria-label="목차">
+    <div class="toc-label">On this page</div>
+    <ul>
+      <li><a href="#t1">궁금증에서 시작</a></li>
+      <li><a href="#t2">탐정 노트</a></li>
+      <li><a href="#t3">정답 — Lottie</a></li>
+      <li><a href="#t4">Lottie 파이프라인</a></li>
+      <li><a href="#t5">웹에 넣기 + 데모</a></li>
+      <li><a href="#t6">접근성</a></li>
+      <li><a href="#t7">스크롤 효과의 함정</a></li>
+      <li><a href="#t8">마무리</a></li>
+    </ul>
+  </nav>
+
+</div>
+
+<script src="/lottie_light.min.js"></script>
+<script>
+
+const root = document.documentElement;
+const btn = document.getElementById('themeBtn');
+function applyTheme(t){ root.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+applyTheme('light'); // 기본 라이트 모드 (토글로 다크 전환 가능)
+function toggleTheme(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+
+const tocUl = document.querySelector('.toc ul');
+if (tocUl) (() => {
+  // 1) h2/h3 자동 수집 → 목차 생성 (SEED처럼 레벨 포함)
+  const article = document.querySelector('article');
+  const heads = [...article.querySelectorAll('h2, h3')].filter(h => !h.closest('.doc-footer'));
+  if (!heads.length) return;
+  heads.forEach((h, i) => { if (!h.id) h.id = 'toc-h' + i; });
+  tocUl.innerHTML = '';
+  heads.forEach(h => {
+    const li = document.createElement('li');
+    li.className = h.tagName === 'H2' ? 'lv2' : 'lv3';
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent.trim().replace(/\s+/g,' ').slice(0, 26);
+    li.appendChild(a); tocUl.appendChild(li);
+  });
+  tocUl.style.position = 'relative';
+
+  // 2) 레벨 경로 계산 (SEED clerk 실측: h2 x=8, h3 x=16, 전환부 대각선)
+  const lis = [...tocUl.children];
+  const pts = lis.map(li => ({ x: li.classList.contains('lv3') ? 16 : 8,
+    t: li.offsetTop + 4, b: li.offsetTop + li.offsetHeight - 4 }));
+  const H = tocUl.scrollHeight;
+  let d = 'M ' + pts[0].x + ' ' + pts[0].t;
+  for (let i = 0; i < pts.length; i++) {
+    d += ' L ' + pts[i].x + ' ' + pts[i].b;
+    if (i < pts.length - 1) d += ' L ' + pts[i+1].x + ' ' + pts[i+1].t; // 레벨 다르면 자연스레 대각선
+  }
+  const mkSvg = (stroke) => {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('width', 18); svg.setAttribute('height', H);
+    svg.setAttribute('viewBox', '0 0 18 ' + H);
+    svg.style.cssText = 'position:absolute;left:-2px;top:0;pointer-events:none;overflow:visible';
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', d); p.setAttribute('fill', 'none');
+    p.setAttribute('stroke', stroke); p.setAttribute('stroke-width', '1.5');
+    svg.appendChild(p); tocUl.appendChild(svg); return svg; // rail 먼저, worm 나중 → worm이 위에 그려짐
+  };
+  mkSvg('rgba(128,134,148,.25)'); // 연한 레일 (전체 경로)
+  const wormSvg = mkSvg(getComputedStyle(document.body).color); // 진한 지렁이 (clip으로 구간만)
+
+  // 3) 스파이 + 지렁이: clip-path inset(위 0 아래) 갱신, 가장자리 개별 보간
+  const links = [...tocUl.querySelectorAll('a')];
+  const sections = links.map(a => document.getElementById(a.getAttribute('href').slice(1)));
+  const updateSpy = () => {
+    let idx = 0;
+    for (let i = 0; i < sections.length; i++)
+      if (sections[i] && sections[i].getBoundingClientRect().top <= innerHeight * 0.3) idx = i;
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 8) idx = sections.length - 1;
+    links.forEach((a, i) => a.classList.toggle('active', i === idx));
+    return idx;
+  };
+  addEventListener('scroll', updateSpy, { passive: true });
+  updateSpy();
+  let top = pts[0].t, bot = pts[0].b;
+  (function tick(){
+    const idx = Math.max(0, links.findIndex(a => a.classList.contains('active')));
+    const tg = pts[idx];
+    const down = tg.t > top;
+    top += (tg.t - top) * (down ? 0.09 : 0.22);
+    bot += (tg.b - bot) * (down ? 0.22 : 0.09);
+    wormSvg.style.clipPath = 'inset(' + Math.max(0, top) + 'px 0 ' + Math.max(0, H - bot) + 'px)';
+    requestAnimationFrame(tick);
+  })();
+})();
+
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const targets = document.querySelectorAll('article h2, article p, .token-diagram, .hero-banner, .tkn-table, pre.code-block');
+  targets.forEach((el, i) => { el.classList.add('reveal'); el.style.setProperty('--reveal-delay', (i % 3) * 0.06 + 's'); });
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting || e.boundingClientRect.bottom < 0) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  targets.forEach(el => io.observe(el));
+  const sweep = () => targets.forEach(el => { if (!el.classList.contains('in') && el.getBoundingClientRect().top < innerHeight) el.classList.add('in'); });
+  addEventListener('scroll', sweep, { passive: true });
+  requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('motion-ready')));
+}
+
+
+// ===== 라이브 데모: 손으로 쓴 Lottie JSON (index.html 히어로와 동일 데이터) =====
+const demoData = {
+  v: "5.7.4", fr: 30, ip: 0, op: 90, w: 340, h: 340, nm: "seed-pulse", ddd: 0, assets: [],
+  layers: [
+    { ddd:0, ind:1, ty:4, nm:"ripple", sr:1, ao:0, ip:0, op:90, st:0,
+      ks:{ o:{a:1,k:[{t:0,s:[70],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:44,s:[0]},{t:45,s:[70],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:89,s:[0]}]},
+        r:{a:0,k:0}, p:{a:0,k:[170,170,0]}, a:{a:0,k:[0,0,0]},
+        s:{a:1,k:[{t:0,s:[55,55,100],o:{x:[.25],y:[0]},i:{x:[.5],y:[1]}},{t:44,s:[130,130,100]},{t:45,s:[55,55,100],o:{x:[.25],y:[0]},i:{x:[.5],y:[1]}},{t:89,s:[130,130,100]}]} },
+      shapes:[{ty:"gr",it:[{ty:"el",p:{a:0,k:[0,0]},s:{a:0,k:[150,150]}},{ty:"st",c:{a:0,k:[1,.4,0,1]},o:{a:0,k:100},w:{a:0,k:5},lc:2,lj:2},{ty:"tr",p:{a:0,k:[0,0]},a:{a:0,k:[0,0]},s:{a:0,k:[100,100]},r:{a:0,k:0},o:{a:0,k:100}}]}] },
+    { ddd:0, ind:2, ty:4, nm:"orbit", sr:1, ao:0, ip:0, op:90, st:0,
+      ks:{ o:{a:0,k:100}, r:{a:1,k:[{t:0,s:[0],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:90,s:[360]}]}, p:{a:0,k:[170,170,0]}, a:{a:0,k:[0,0,0]}, s:{a:0,k:[100,100,100]} },
+      shapes:[{ty:"gr",it:[{ty:"el",p:{a:0,k:[104,0]},s:{a:0,k:[22,22]}},{ty:"fl",c:{a:0,k:[.027,.569,.443,1]},o:{a:0,k:100}},{ty:"tr",p:{a:0,k:[0,0]},a:{a:0,k:[0,0]},s:{a:0,k:[100,100]},r:{a:0,k:0},o:{a:0,k:100}}]}] },
+    { ddd:0, ind:3, ty:4, nm:"seed", sr:1, ao:0, ip:0, op:90, st:0,
+      ks:{ o:{a:0,k:100}, r:{a:0,k:0}, p:{a:0,k:[170,170,0]}, a:{a:0,k:[0,0,0]},
+        s:{a:1,k:[{t:0,s:[88,88,100],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:45,s:[106,106,100],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:90,s:[88,88,100]}]} },
+      shapes:[{ty:"gr",it:[{ty:"el",p:{a:0,k:[0,0]},s:{a:0,k:[96,96]}},{ty:"fl",c:{a:0,k:[1,.4,0,1]},o:{a:0,k:100}},{ty:"tr",p:{a:0,k:[0,0]},a:{a:0,k:[0,0]},s:{a:0,k:[100,100]},r:{a:0,k:0},o:{a:0,k:100}}]}] }
+  ]
+};
+const demoReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const demoAnim = lottie.loadAnimation({ container: document.getElementById('demoAnim'), renderer: 'svg', loop: true, autoplay: !demoReduced, animationData: demoData });
+const demoBtn = document.getElementById('demoBtn');
+function setDemo(on){ on ? demoAnim.play() : demoAnim.pause(); demoBtn.textContent = on ? '❚❚ 일시정지' : '▶ 재생'; }
+setDemo(!demoReduced);
+demoBtn.addEventListener('click', () => setDemo(demoAnim.isPaused));
+
+</script>
+<script>
+document.querySelectorAll('#mnav a').forEach(function(a){ a.addEventListener('click', function(){ document.body.classList.remove('mnav-open'); }); });
+</script>
+</body>
+</html>
