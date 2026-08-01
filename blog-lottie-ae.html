@@ -124,8 +124,8 @@ header {
 }
 .sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--seed-x6); }
 .sidebar nav a {
-  font-size: 16px; color: var(--seed-color-fg-neutral-muted);
-  padding: 8px 12px; border-radius: var(--seed-radius-r2);
+  font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-muted);
+  padding: var(--seed-x2) var(--seed-x3); border-radius: var(--seed-radius-r2);
   transition: background var(--seed-duration-d3), color var(--seed-duration-d3);
 }
 .sidebar nav a:hover { background: var(--seed-color-bg-layer-fill); color: var(--seed-color-fg-neutral); }
@@ -227,10 +227,14 @@ pre.code-block .s { color: #85b8fd; } /* 문자열 */
 
 .toc { position: sticky; top: calc(var(--seed-x14) + var(--seed-x6)); align-self: start; font-size: var(--seed-font-size-t2); }
 .toc .toc-label { color: var(--seed-color-fg-neutral-subtle); font-weight: var(--seed-font-weight-medium); margin-bottom: var(--seed-x3); }
-.toc ul { list-style: none; border-left: 1px solid var(--seed-color-stroke-neutral-weak); }
-.toc li a { display: block; color: var(--seed-color-fg-neutral-subtle); padding: var(--seed-x1) 0 var(--seed-x1) var(--seed-x3); border-left: 2px solid transparent; margin-left: -1.5px; transition: color var(--seed-duration-d3), border-color var(--seed-duration-d3); }
+/* SEED(Fumadocs clerk) 방식: 연한 레일 + 진한 지렁이 마커(위/아래 가장자리 개별 추적) */
+.toc ul { list-style: none; position: relative; }
+.toc li a { display: block; color: var(--seed-color-fg-neutral-subtle); padding: var(--seed-x1) 0 var(--seed-x1) 20px; transition: color var(--seed-duration-d3); }
 .toc li a:hover { color: var(--seed-color-fg-neutral); }
-.toc li a.active { color: var(--seed-color-fg-neutral); border-left-color: var(--seed-color-fg-neutral); font-weight: var(--seed-font-weight-medium); }
+.toc li a.active { color: var(--seed-color-fg-neutral); font-weight: var(--seed-font-weight-medium); }
+.toc .rail, .toc .worm { position: absolute; left: 6px; width: 2px; border-radius: 2px; pointer-events: none; }
+.toc .rail { top: 0; height: 100%; background: var(--seed-color-stroke-neutral-subtle, #0000000c); }
+.toc .worm { top: 0; height: 0; background: var(--seed-color-fg-neutral); will-change: top, height; }
 
 .reveal { opacity: 0; transform: translateY(1rem); transition: opacity .5s ease, transform .5s ease; transition-delay: var(--reveal-delay, 0s); }
 .reveal.in { opacity: 1; transform: translateY(0); }
@@ -413,6 +417,38 @@ const spy = new IntersectionObserver(entries => {
   });
 }, { rootMargin: '-20% 0px -70% 0px' });
 sections.forEach(s => s && spy.observe(s));
+
+// TOC 지렁이 마커 — SEED(Fumadocs clerk) 코드 방식: 활성 구간을 레일 위에 clip처럼 표시,
+// 위/아래 가장자리를 서로 다른 속도로 보간 → 스크롤 시 늘었다 줄어드는 지렁이 움직임
+(() => {
+  const ul = document.querySelector('.toc ul');
+  if (!ul) return;
+  const rail = document.createElement('span'); rail.className = 'rail';
+  const worm = document.createElement('span'); worm.className = 'worm';
+  ul.prepend(rail, worm);
+  let top = 0, bot = 0, init = false;
+  const target = () => {
+    const a = ul.querySelector('a.active') || ul.querySelector('a');
+    if (!a) return null;
+    const li = a.closest('li');
+    return { t: li.offsetTop + 4, b: li.offsetTop + li.offsetHeight - 4 };
+  };
+  (function tick(){
+    const tg = target();
+    if (tg) {
+      if (!init) { top = tg.t; bot = tg.b; init = true; }
+      // 이동 방향 쪽 가장자리가 먼저(0.22), 반대쪽이 늦게(0.09) 따라옴 → 지렁이
+      const goingDown = tg.t > top;
+      const kTop = goingDown ? 0.09 : 0.22;
+      const kBot = goingDown ? 0.22 : 0.09;
+      top += (tg.t - top) * kTop;
+      bot += (tg.b - bot) * kBot;
+      worm.style.top = top + 'px';
+      worm.style.height = Math.max(4, bot - top) + 'px';
+    }
+    requestAnimationFrame(tick);
+  })();
+})();
 
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const targets = document.querySelectorAll('article h2, article p, .token-diagram, .hero-banner, .tkn-table, pre.code-block');
