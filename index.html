@@ -610,7 +610,7 @@ body.landing .nav .logo { font-size: 16px; }
 /* 모바일 오버플로 수정: flex/grid 아이템이 콘텐츠 폭으로 늘어나 줄바꿈을 막는 문제 */
 .sec-head > div, .principle-grid > * { min-width: 0; }
 
-@media (max-width: 860px){ body.landing .principle-grid { grid-template-columns: 1fr; } }
+@media (max-width: 860px){ body.landing .principle-grid { grid-template-columns: 1fr; } .principle-sticky, body.landing .principle-sticky { position: static; } }
 
 /* ===== SEED 모바일 내비 (코드 실측): 풀폭 64px 바 + 40px 원형 버튼 + 위→아래 슬라이드 풀스크린 패널 ===== */
 .nav-toggle {
