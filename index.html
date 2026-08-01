@@ -546,6 +546,39 @@ body.landing .principle-sticky { padding-bottom: var(--seed-x6); }
 /* 에세이 순차 등장: 왼→오, 아래→위 */
 .essay-card.reveal { transform: translateY(44px); transition-duration: .6s; }
 .essay-card.reveal.in { transform: translateY(0); }
+
+/* ===== 정밀 실측 반영: 내비(16px/400, pad 6x12, gap 2, 중앙 필) ===== */
+body.landing header { display:flex; justify-content:center; top: 20px; }
+body.landing .nav {
+  width: auto; max-width: none; height: 48px;
+  padding: 6px 10px 6px 22px; gap: var(--seed-x6);
+  background: rgba(26,28,32,.92); border-radius: 9999px;
+}
+body.landing .nav ul { gap: 2px; }
+body.landing .nav ul a { font-size: 16px; font-weight: 400; padding: 6px 12px; border-radius: 9999px; }
+body.landing .nav ul a:hover { background: #ffffff14; }
+body.landing .nav .logo { font-size: 16px; }
+
+/* ===== 제목/카드 h3 줄 리빌 (SEED 랜딩 동작) ===== */
+.tr-mask { display: block; overflow: hidden; }
+.tr-line { display: block; transform: translateY(110%); transition: transform .7s cubic-bezier(.2,.6,.2,1); transition-delay: var(--tr-delay, 0s); }
+.reveal-title.in .tr-line { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce){ .tr-line { transform:none; transition:none; } }
+
+/* ===== 에세이 순차 등장 강화 ===== */
+.essay-grid .essay-card.reveal { transform: translateY(56px); transition-duration: .7s; }
+.essay-grid .essay-card.reveal.in { transform: translateY(0); }
+
+/* ===== 더보기 버튼: 색 순환 + 팝 스케일 등장/퇴장 ===== */
+@keyframes moreCycle { 0%{background:#f60} 25%{background:#00a05e} 50%{background:#217cf9} 75%{background:#e14d00} 100%{background:#f60} }
+.marquee-more {
+  background:#f60; color:#fff; opacity:1;
+  animation: moreCycle 3.2s linear infinite;
+  transform: translate(-50%,-50%) scale(0);
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: none; pointer-events: none;
+}
+.marquee-viewport:hover .marquee-more { transform: translate(-50%,-50%) scale(1); pointer-events: auto; opacity:1; }
 </style>
 </head>
 <body class="landing">
@@ -854,6 +887,26 @@ function scrubArts(){
 addEventListener('scroll', () => { lineReveal(); scrubArts(); }, { passive: true });
 lineReveal(); scrubArts();
 
+
+// 섹션 제목·카드 h3 줄 리빌 (SEED 랜딩 동작): 텍스트를 마스크 라인으로 감싸고 진입 시 상승
+if (!motionReduced) {
+  const wrapLines = el => {
+    if (el.dataset.tr) return;
+    el.dataset.tr = '1';
+    const parts = el.innerHTML.split(/<br\s*\/?>/i);
+    el.innerHTML = parts.map((p,i) => '<span class="tr-mask"><span class="tr-line" style="--tr-delay:'+(i*0.12)+'s">'+p+'</span></span>').join('');
+    el.classList.add('reveal-title');
+  };
+  document.querySelectorAll('.section-title, .principle-card h3, .essay-grid .essay-card h3').forEach(wrapLines);
+  const io2 = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting || e.boundingClientRect.bottom < 0) { e.target.classList.add('in'); io2.unobserve(e.target); }
+  }), { threshold: 0.2 });
+  document.querySelectorAll('.reveal-title').forEach(el => io2.observe(el));
+  addEventListener('scroll', () => document.querySelectorAll('.reveal-title:not(.in)').forEach(el => {
+    if (el.getBoundingClientRect().top < innerHeight*0.92) el.classList.add('in');
+  }), { passive: true });
+}
+
 // (D) 기반 무한 마퀴 — 기본 40px/s, 호버 시 6px/s로 감속(부드러운 보간), 더보기는 CSS로 노출
 const track = document.getElementById('marqueeTrack');
 const vp = document.getElementById('marqueeVp');
@@ -894,7 +947,7 @@ if (!reduced) {
     el.classList.add('reveal');
     el.style.setProperty('--reveal-delay', (i % 4) * 0.07 + 's'); // 형제 간 스태거
   }); // (아래에서 에세이 카드만 순차 딜레이 재설정)
-  document.querySelectorAll('.essay-grid .essay-card').forEach((el, i) => { el.style.setProperty('--reveal-delay', (i * 0.18) + 's');
+  document.querySelectorAll('.essay-grid .essay-card').forEach((el, i) => { el.style.setProperty('--reveal-delay', (i * 0.25) + 's');
   });
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {

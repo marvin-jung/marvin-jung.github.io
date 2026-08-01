@@ -548,6 +548,39 @@ body.landing .principle-sticky { padding-bottom: var(--seed-x6); }
 .essay-card.reveal { transform: translateY(44px); transition-duration: .6s; }
 .essay-card.reveal.in { transform: translateY(0); }
 
+/* ===== 정밀 실측 반영: 내비(16px/400, pad 6x12, gap 2, 중앙 필) ===== */
+body.landing header { display:flex; justify-content:center; top: 20px; }
+body.landing .nav {
+  width: auto; max-width: none; height: 48px;
+  padding: 6px 10px 6px 22px; gap: var(--seed-x6);
+  background: rgba(26,28,32,.92); border-radius: 9999px;
+}
+body.landing .nav ul { gap: 2px; }
+body.landing .nav ul a { font-size: 16px; font-weight: 400; padding: 6px 12px; border-radius: 9999px; }
+body.landing .nav ul a:hover { background: #ffffff14; }
+body.landing .nav .logo { font-size: 16px; }
+
+/* ===== 제목/카드 h3 줄 리빌 (SEED 랜딩 동작) ===== */
+.tr-mask { display: block; overflow: hidden; }
+.tr-line { display: block; transform: translateY(110%); transition: transform .7s cubic-bezier(.2,.6,.2,1); transition-delay: var(--tr-delay, 0s); }
+.reveal-title.in .tr-line { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce){ .tr-line { transform:none; transition:none; } }
+
+/* ===== 에세이 순차 등장 강화 ===== */
+.essay-grid .essay-card.reveal { transform: translateY(56px); transition-duration: .7s; }
+.essay-grid .essay-card.reveal.in { transform: translateY(0); }
+
+/* ===== 더보기 버튼: 색 순환 + 팝 스케일 등장/퇴장 ===== */
+@keyframes moreCycle { 0%{background:#f60} 25%{background:#00a05e} 50%{background:#217cf9} 75%{background:#e14d00} 100%{background:#f60} }
+.marquee-more {
+  background:#f60; color:#fff; opacity:1;
+  animation: moreCycle 3.2s linear infinite;
+  transform: translate(-50%,-50%) scale(0);
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: none; pointer-events: none;
+}
+.marquee-viewport:hover .marquee-more { transform: translate(-50%,-50%) scale(1); pointer-events: auto; opacity:1; }
+
 .list-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--seed-x6); }
 @media (max-width: 980px){ .list-grid { grid-template-columns:repeat(2,1fr); } }
 @media (max-width: 640px){ .list-grid { grid-template-columns:1fr; } }
