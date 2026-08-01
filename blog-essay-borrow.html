@@ -230,6 +230,8 @@ pre.code-block .s { color: #85b8fd; } /* 문자열 */
 /* SEED(Fumadocs clerk) 방식: 연한 레일 + 진한 지렁이 마커(위/아래 가장자리 개별 추적) */
 .toc ul { list-style: none; position: relative; }
 .toc li a { display: block; color: var(--seed-color-fg-neutral-subtle); padding: var(--seed-x1) 0 var(--seed-x1) 20px; transition: color var(--seed-duration-d3); }
+.toc li.lv3 a { padding-left: 32px; } /* SEED 실측: h2 20px / h3 32px */
+article h3 { scroll-margin-top: 100px; }
 .toc li a:hover { color: var(--seed-color-fg-neutral); }
 .toc li a.active { color: var(--seed-color-fg-neutral); font-weight: var(--seed-font-weight-medium); }
 .toc .rail, .toc .worm { position: absolute; left: 6px; width: 2px; border-radius: 2px; pointer-events: none; }
@@ -341,47 +343,69 @@ function applyTheme(t){ root.setAttribute('data-theme', t); btn.textContent = t 
 applyTheme('light'); // 기본 라이트 모드 (토글로 다크 전환 가능)
 function toggleTheme(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
 
-const tocLinks = [...document.querySelectorAll('.toc a')];
-const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href')));
-// 스크롤 계산식 스파이: 뷰포트 30% 지점을 지난 마지막 섹션이 활성.
-// 페이지 바닥에 닿으면 마지막 항목 강제 활성 → 지렁이가 챕터 끝까지 내려간다.
-const updateSpy = () => {
-  let active = sections.find(Boolean);
-  for (const s of sections) if (s && s.getBoundingClientRect().top <= innerHeight * 0.3) active = s;
-  if (innerHeight + scrollY >= document.documentElement.scrollHeight - 8) active = [...sections].reverse().find(Boolean);
-  if (active) tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + active.id));
-};
-addEventListener('scroll', updateSpy, { passive: true });
-updateSpy();
+const tocUl = document.querySelector('.toc ul');
+if (tocUl) (() => {
+  // 1) h2/h3 자동 수집 → 목차 생성 (SEED처럼 레벨 포함)
+  const article = document.querySelector('article');
+  const heads = [...article.querySelectorAll('h2, h3')].filter(h => !h.closest('.doc-footer'));
+  if (!heads.length) return;
+  heads.forEach((h, i) => { if (!h.id) h.id = 'toc-h' + i; });
+  tocUl.innerHTML = '';
+  heads.forEach(h => {
+    const li = document.createElement('li');
+    li.className = h.tagName === 'H2' ? 'lv2' : 'lv3';
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent.trim().replace(/\s+/g,' ').slice(0, 26);
+    li.appendChild(a); tocUl.appendChild(li);
+  });
+  tocUl.style.position = 'relative';
 
-// TOC 지렁이 마커 — SEED(Fumadocs clerk) 코드 방식: 활성 구간을 레일 위에 clip처럼 표시,
-// 위/아래 가장자리를 서로 다른 속도로 보간 → 스크롤 시 늘었다 줄어드는 지렁이 움직임
-(() => {
-  const ul = document.querySelector('.toc ul');
-  if (!ul) return;
-  const rail = document.createElement('span'); rail.className = 'rail';
-  const worm = document.createElement('span'); worm.className = 'worm';
-  ul.prepend(rail, worm);
-  let top = 0, bot = 0, init = false;
-  const target = () => {
-    const a = ul.querySelector('a.active') || ul.querySelector('a');
-    if (!a) return null;
-    const li = a.closest('li');
-    return { t: li.offsetTop + 4, b: li.offsetTop + li.offsetHeight - 4 };
+  // 2) 레벨 경로 계산 (SEED clerk 실측: h2 x=8, h3 x=16, 전환부 대각선)
+  const lis = [...tocUl.children];
+  const pts = lis.map(li => ({ x: li.classList.contains('lv3') ? 16 : 8,
+    t: li.offsetTop + 4, b: li.offsetTop + li.offsetHeight - 4 }));
+  const H = tocUl.scrollHeight;
+  let d = 'M ' + pts[0].x + ' ' + pts[0].t;
+  for (let i = 0; i < pts.length; i++) {
+    d += ' L ' + pts[i].x + ' ' + pts[i].b;
+    if (i < pts.length - 1) d += ' L ' + pts[i+1].x + ' ' + pts[i+1].t; // 레벨 다르면 자연스레 대각선
+  }
+  const mkSvg = (stroke) => {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('width', 18); svg.setAttribute('height', H);
+    svg.setAttribute('viewBox', '0 0 18 ' + H);
+    svg.style.cssText = 'position:absolute;left:-2px;top:0;pointer-events:none;overflow:visible';
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', d); p.setAttribute('fill', 'none');
+    p.setAttribute('stroke', stroke); p.setAttribute('stroke-width', '1.5');
+    svg.appendChild(p); tocUl.appendChild(svg); return svg; // rail 먼저, worm 나중 → worm이 위에 그려짐
   };
+  mkSvg('rgba(128,134,148,.25)'); // 연한 레일 (전체 경로)
+  const wormSvg = mkSvg(getComputedStyle(document.body).color); // 진한 지렁이 (clip으로 구간만)
+
+  // 3) 스파이 + 지렁이: clip-path inset(위 0 아래) 갱신, 가장자리 개별 보간
+  const links = [...tocUl.querySelectorAll('a')];
+  const sections = links.map(a => document.getElementById(a.getAttribute('href').slice(1)));
+  const updateSpy = () => {
+    let idx = 0;
+    for (let i = 0; i < sections.length; i++)
+      if (sections[i] && sections[i].getBoundingClientRect().top <= innerHeight * 0.3) idx = i;
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 8) idx = sections.length - 1;
+    links.forEach((a, i) => a.classList.toggle('active', i === idx));
+    return idx;
+  };
+  addEventListener('scroll', updateSpy, { passive: true });
+  updateSpy();
+  let top = pts[0].t, bot = pts[0].b;
   (function tick(){
-    const tg = target();
-    if (tg) {
-      if (!init) { top = tg.t; bot = tg.b; init = true; }
-      // 이동 방향 쪽 가장자리가 먼저(0.22), 반대쪽이 늦게(0.09) 따라옴 → 지렁이
-      const goingDown = tg.t > top;
-      const kTop = goingDown ? 0.09 : 0.22;
-      const kBot = goingDown ? 0.22 : 0.09;
-      top += (tg.t - top) * kTop;
-      bot += (tg.b - bot) * kBot;
-      worm.style.top = top + 'px';
-      worm.style.height = Math.max(4, bot - top) + 'px';
-    }
+    const idx = Math.max(0, links.findIndex(a => a.classList.contains('active')));
+    const tg = pts[idx];
+    const down = tg.t > top;
+    top += (tg.t - top) * (down ? 0.09 : 0.22);
+    bot += (tg.b - bot) * (down ? 0.22 : 0.09);
+    wormSvg.style.clipPath = 'inset(' + Math.max(0, top) + 'px 0 ' + Math.max(0, H - bot) + 'px)';
     requestAnimationFrame(tick);
   })();
 })();
