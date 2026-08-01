@@ -430,9 +430,60 @@ footer {
   margin-top: var(--seed-x10);
   line-height: 0; pointer-events: none;
 }
+
+/* ===== SEED 랜딩 연출 보정: 다크 캔버스 · 52px 타이포 · 와이드 · 필 내비 · 풀블리드 푸터 ===== */
+body.landing { background: #121212; color: #fff; }
+body.landing .container { max-width: 1400px; }
+body.landing section { padding: calc(var(--seed-x16) * 1.4) 0; }
+body.landing .section-title { font-size: 52px; color: #fff; line-height: 1.08; }
+body.landing .section-sub { color: #868b94; }
+/* 필 형태 플로팅 내비 (SEED 실측: fixed, 다크 필) */
+body.landing header { position: fixed; left: 0; right: 0; top: var(--seed-x4); background: transparent; border: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+body.landing .nav {
+  max-width: 760px; background: #1a1c20e6; border-radius: var(--seed-radius-full);
+  padding: 0 var(--seed-x6); height: 52px; box-shadow: var(--seed-shadow-s2);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+body.landing .nav .logo, body.landing .nav ul a { color: #fff; }
+body.landing .nav ul a { color: #b0b3ba; } body.landing .nav ul a:hover { color: #fff; }
+body.landing .theme-toggle { display: none; } /* 랜딩은 다크 고정 — SEED와 동일 */
+body.landing main { padding-top: 84px; }
+/* 1막: 풀스크린 스테이트먼트 + 자작 그래픽 모자이크 */
+.act1 { min-height: 92vh; display: flex; flex-direction: column; justify-content: center; }
+.act1 .statement { font-size: clamp(30px, 3.4vw, 48px); font-weight: var(--seed-font-weight-bold); line-height: 1.35; letter-spacing: -0.01em; }
+.act1 .statement small { display: block; font-size: clamp(15px, 1.2vw, 18px); font-weight: var(--seed-font-weight-regular); color: #868b94; margin-top: var(--seed-x5); line-height: 1.7; }
+.mosaic { width: 100vw; margin-left: calc(50% - 50vw); margin-top: var(--seed-x10);
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--seed-x3); padding: 0 var(--seed-x3); }
+.mosaic > div { border-radius: var(--seed-radius-r4); aspect-ratio: 1/1; overflow: hidden; }
+.mosaic svg { width: 100%; height: 100%; display: block; transition: transform var(--seed-duration-d6); }
+.mosaic > div:hover svg { transform: scale(1.07); }
+@media (max-width: 900px){ .mosaic { grid-template-columns: repeat(3, 1fr); } .mosaic > div:nth-child(n+7){ display:none; } }
+/* 다크 캔버스 위 컴포넌트 보정 */
+body.landing .intro-band { background: transparent; padding-top: var(--seed-x16); }
+body.landing .principle-card p { color: #b0b3ba; }
+body.landing .ins-card .cat, body.landing .essay-card p { color: #868b94; }
+body.landing .ins-card .thumb, body.landing .essay-card .thumb { border-color: #ffffff14; }
+body.landing .ins-more { border-color: #33373e; color: #868b94; }
+body.landing .ins-more:hover { background: #1a1c20; border-color: #f60; color: #ff9364; }
+body.landing .showcase-row::-webkit-scrollbar-thumb { background: #33373e; }
+body.landing .sponsor-slot { background: #1a1c20; border-color: #33373e; }
+body.landing .contact-box { background: #1a1c20; }
+/* 인사이트/원칙 카드 스케일 업 (SEED 실측: 쇼케이스 430px) */
+body.landing .showcase-row { grid-auto-columns: 430px; }
+body.landing .principle-grid { grid-template-columns: 340px minmax(0,1fr); }
+/* 풀블리드 오렌지 푸터 + 링크 컬럼 (SEED 구조) */
+body.landing footer { border: none; margin-top: var(--seed-x16); padding: 0; }
+.finale-bleed { width: 100vw; margin-left: calc(50% - 50vw); background: var(--seed-color-bg-brand-solid); color: #1a1c20; padding: var(--seed-x16) 0 0; overflow: hidden; }
+.finale-inner { max-width: 1400px; margin: 0 auto; padding: 0 var(--seed-x6); }
+.finale-cols { display: flex; justify-content: space-between; gap: var(--seed-x8); flex-wrap: wrap; }
+.finale-cols .tag { font-weight: 800; font-size: var(--seed-font-size-t6); }
+.finale-cols .cols { display: flex; gap: var(--seed-x16); font-size: var(--seed-font-size-t3); }
+.finale-cols .cols a { display: block; margin-bottom: var(--seed-x2); color: #47270f; }
+.finale-cols .cols a:hover { color: #1a1c20; }
+.finale-big { font-size: clamp(90px, 17vw, 300px); font-weight: 800; letter-spacing: -0.045em; line-height: .9; white-space: nowrap; margin-top: var(--seed-x10); transform: translateY(8%); }
 </style>
 </head>
-<body>
+<body class="landing">
 
 <header>
   <div class="container nav">
@@ -449,6 +500,14 @@ footer {
 </header>
 
 <main class="container" id="top">
+
+  <section class="act1">
+    <div class="statement">
+      추측하지 않고 실측합니다.<br>확인된 것만 만들고, 만든 것은 끝까지 배포합니다.
+      <small>이 사이트의 모든 수치·색·모션은 실제 측정에서 왔고,<br>모든 그래픽과 애니메이션은 직접 만들었습니다.</small>
+    </div>
+    <div class="mosaic" aria-hidden="true"><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#f60"/><circle cx="100" cy="100" r="55" fill="#1a1c20"/></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#d6f5a2"/><path d="M100 160 V95 M100 95 C100 60 65 70 50 35 M100 95 C100 60 135 70 150 35" stroke="#1a1c20" stroke-width="9" fill="none" stroke-linecap="round"/></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#17191c"/><g stroke="#f60" stroke-width="8" stroke-linecap="round"><line x1="60" y1="150" x2="140" y2="50"/><line x1="100" y1="150" x2="160" y2="80" stroke="#00a05e"/></g></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#ffd5c0"/><rect x="45" y="45" width="110" height="110" rx="24" fill="#f60"/></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#1a1c20"/><circle cx="70" cy="70" r="26" fill="#fbdc65"/><circle cx="130" cy="130" r="26" fill="#217cf9"/></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#00a05e"/><path d="M60 120 h80 M100 80 v80" stroke="#d6f5a2" stroke-width="14" stroke-linecap="round"/></svg></div></div>
+  </section>
 
   <section class="intro-band">
     <div class="intro-inner">
@@ -582,13 +641,23 @@ footer {
 </main>
 
 <footer>
-  <div class="container">
-    <div class="finale">
-      <div class="tag">Rooted in measurement.</div>
-      <div class="big"><span class="star">✳</span> JISUNG</div>
-    </div>
-    <div style="padding:var(--seed-x6) 0; font-size:var(--seed-font-size-t2); color:var(--seed-color-fg-neutral-subtle); text-align:center;">
-      © 2026 정지성 · Design tokens &amp; landing structure referenced from <a href="https://seed-design.io" style="text-decoration:underline">SEED Design System</a> (Daangn) — all artwork &amp; animations are original
+  <div class="finale-bleed">
+    <div class="finale-inner">
+      <div class="finale-cols">
+        <div class="tag">Rooted in measurement.<br><span style="font-weight:400; font-size:var(--seed-font-size-t3)">© 2026 정지성</span></div>
+        <div class="cols">
+          <div>
+            <a href="#projects">Projects</a><a href="#insights">Insights</a><a href="#essay">Essay</a>
+          </div>
+          <div>
+            <a href="blog.html">Blog</a><a href="blog-essay-measure.html">Essay 전문</a><a href="mailto:escomjung@gmail.com">Contact</a>
+          </div>
+          <div>
+            <a href="https://seed-design.io">SEED (구조 참조)</a><a href="https://github.com/marvin-jung">GitHub</a>
+          </div>
+        </div>
+      </div>
+      <div class="finale-big"><span class="star">✳</span> JISUNG</div>
     </div>
   </div>
 </footer>
@@ -655,7 +724,7 @@ motionBtn.addEventListener('click', () => setMotion(!motionPlaying));
 // ============================================================
 if (!reduced) {
   const targets = document.querySelectorAll(
-    '.section-title, .section-sub, .principle-card, .ins-card, .ins-more, .essay-card, .contact-box, .finale'
+    '.section-title, .section-sub, .principle-card, .ins-card, .ins-more, .essay-card, .contact-box, .statement, .mosaic > div'
   );
   targets.forEach((el, i) => {
     el.classList.add('reveal');
