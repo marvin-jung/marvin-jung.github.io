@@ -325,6 +325,83 @@ footer {
   border-top: 1px solid var(--seed-color-stroke-neutral-muted);
   margin-top: var(--seed-x16);
 }
+
+/* ===== SEED 랜딩 구조 차용 섹션들 ===== */
+.sec-head { display:flex; align-items:baseline; justify-content:space-between; gap:var(--seed-x4); margin-bottom:var(--seed-x2); }
+.more-link { font-size:var(--seed-font-size-t3); font-weight:var(--seed-font-weight-medium); color:var(--seed-color-fg-neutral-subtle); transition:color var(--seed-duration-d3); white-space:nowrap; }
+.more-link:hover { color:var(--seed-color-fg-brand); }
+
+/* 대표 프로젝트 — SEED '디자인 원칙' 구조: 좌측 고정 제목 + 우측 대형 카드 스택 */
+.principle-grid { display:grid; grid-template-columns: 300px minmax(0,1fr); gap:var(--seed-x10); align-items:start; }
+@media (max-width: 860px){ .principle-grid { grid-template-columns:1fr; } .principle-sticky { position:static; } }
+.principle-sticky { position:sticky; top:calc(var(--seed-x14) + var(--seed-x8)); }
+.principle-cards { display:flex; flex-direction:column; gap:var(--seed-x16); }
+.principle-card .art {
+  border-radius: var(--seed-radius-r6); aspect-ratio: 16/9; overflow: hidden;
+  display:flex; align-items:center; justify-content:center; position:relative;
+  transition: transform var(--seed-duration-d6);
+}
+.principle-card:hover .art { transform: scale(1.015); }
+.principle-card h3 { font-size:var(--seed-font-size-t8); font-weight:var(--seed-font-weight-bold); margin:var(--seed-x5) 0 var(--seed-x2); }
+.principle-card p { color:var(--seed-color-fg-neutral-muted); }
+/* art 1: 연두 배경 + 슬라이딩 필 (SEED Accessible 카드 오마주) */
+.art-pill { background:#d6f5a2; }
+.art-pill .bar { display:flex; width:120%; height:22%; }
+.art-pill .bar span { flex:1; }
+.art-pill .bar span:nth-child(1){ background:#1a1c20; border-radius:999px 0 0 999px; }
+.art-pill .bar span:nth-child(2){ background:#f60; }
+.art-pill .bar span:nth-child(3){ background:#fff; border-radius:0 999px 999px 0; }
+.art-pill .bar span:nth-child(4){ background:#00a05e; }
+@keyframes slidePill { 0%,100%{ transform:translateX(-6%);} 50%{ transform:translateX(6%);} }
+.art-pill .bar { animation: slidePill 6s ease-in-out infinite; }
+/* art 2: 다크 배경 + 대각선 스트로크 */
+.art-lines { background:#17191c; }
+.art-lines svg { width:70%; height:70%; }
+@keyframes drawLine { 0%{ stroke-dashoffset:220; } 55%,100%{ stroke-dashoffset:0; } }
+.art-lines line { stroke-dasharray:220; animation: drawLine 5s ease-in-out infinite; }
+/* art 3: 캐럿 배경 + 그리드 */
+.art-grid { background:#f60; }
+.art-grid svg { width:100%; height:100%; }
+@keyframes gridFloat { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-6px);} }
+.art-grid circle { animation: gridFloat 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){ .art-pill .bar, .art-lines line, .art-grid circle { animation:none; } }
+
+/* 인사이트 — SEED '기반' 구조: 가로 스크롤 썸네일 행 */
+.showcase-row {
+  display:grid; grid-auto-flow:column; grid-auto-columns: 280px;
+  gap:var(--seed-x5); overflow-x:auto; padding:var(--seed-x2) var(--seed-x1) var(--seed-x5);
+  scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+}
+.showcase-row::-webkit-scrollbar { height:8px; }
+.showcase-row::-webkit-scrollbar-thumb { background:var(--seed-color-stroke-neutral-weak); border-radius:999px; }
+.ins-card { scroll-snap-align:start; display:block; }
+.ins-card .thumb {
+  aspect-ratio:16/10; border-radius:var(--seed-radius-r4); overflow:hidden;
+  border:1px solid var(--seed-color-stroke-neutral-muted);
+}
+.ins-card .thumb svg { width:100%; height:100%; display:block; transition:transform var(--seed-duration-d6); }
+.ins-card:hover .thumb svg { transform:scale(1.06); }
+.ins-card .label { font-size:var(--seed-font-size-t4); font-weight:var(--seed-font-weight-medium); margin-top:var(--seed-x3); }
+.ins-card .cat { font-size:var(--seed-font-size-t2); color:var(--seed-color-fg-neutral-subtle); }
+.ins-more { display:flex; align-items:center; justify-content:center; border:1px dashed var(--seed-color-stroke-neutral-weak); border-radius:var(--seed-radius-r4); aspect-ratio:16/10; color:var(--seed-color-fg-neutral-subtle); font-size:var(--seed-font-size-t4); font-weight:var(--seed-font-weight-medium); transition:all var(--seed-duration-d3); scroll-snap-align:start; }
+.ins-more:hover { color:var(--seed-color-fg-brand); border-color:var(--seed-color-palette-carrot-300); background:var(--seed-color-bg-brand-weak); }
+
+/* 에세이 — SEED '자라나는 과정' 구조: 3열 아티클 카드 */
+.essay-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--seed-x6); }
+@media (max-width: 860px){ .essay-grid { grid-template-columns:1fr; } }
+.essay-card .thumb { aspect-ratio:16/10; border-radius:var(--seed-radius-r4); overflow:hidden; border:1px solid var(--seed-color-stroke-neutral-muted); }
+.essay-card .thumb svg { width:100%; height:100%; display:block; transition:transform var(--seed-duration-d6); }
+.essay-card:hover .thumb svg { transform:scale(1.05); }
+.essay-card h3 { font-size:var(--seed-font-size-t6); font-weight:var(--seed-font-weight-bold); margin:var(--seed-x4) 0 var(--seed-x1); }
+.essay-card p { font-size:var(--seed-font-size-t3); color:var(--seed-color-fg-neutral-subtle); }
+
+/* 브랜드 피날레 — SEED 푸터 오마주 */
+.finale { background:var(--seed-color-bg-brand-solid); color:#1a1c20; border-radius:var(--seed-radius-r6); padding:var(--seed-x10) var(--seed-x8) var(--seed-x6); overflow:hidden; margin-top:var(--seed-x16); }
+.finale .tag { font-weight:var(--seed-font-weight-bold); font-size:var(--seed-font-size-t5); }
+.finale .big { font-size: clamp(64px, 14vw, 200px); font-weight:800; letter-spacing:-0.04em; line-height:.95; margin-top:var(--seed-x6); white-space:nowrap; }
+.finale .big .star { display:inline-block; transform-origin:center; }
+.finale:hover .big .star { animation: spinStar 2.5s ease-in-out; }
+@keyframes spinStar { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
 </style>
 </head>
 <body>
@@ -333,9 +410,9 @@ footer {
   <div class="container nav">
     <a class="logo" href="#top"><span class="logo-dot"></span>정지성</a>
     <ul>
-      <li><a href="#about">About</a></li>
       <li><a href="#projects">Projects</a></li>
-      <li><a href="#skills">Skills</a></li>
+      <li><a href="#insights">Insights</a></li>
+      <li><a href="#essay">Essay</a></li>
       <li><a href="blog.html">Blog</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환" id="themeBtn">☾</button></li>
@@ -360,62 +437,108 @@ footer {
     </div>
   </section>
 
-  <section id="about">
-    <h2 class="section-title">About</h2>
-    <p class="section-sub">저를 구성하는 두 가지 축입니다. (내용은 자리 표시 — 실제 이력으로 교체 필요)</p>
-    <div class="about-grid">
-      <div class="about-card">
-        <h3>[경력 · 하는 일]</h3>
-        <p>[예: ○○ 분야에서 ○년간 일하며 ○○을 만들어 왔습니다. 주요 성과 한두 가지를 여기에 적습니다.]</p>
-      </div>
-      <div class="about-card">
-        <h3>[가치관 · 일하는 방식]</h3>
-        <p>[예: 검증 없이 단정하지 않고, 실측과 근거를 기반으로 결정합니다. 일하는 원칙을 여기에 적습니다.]</p>
-      </div>
-    </div>
-  </section>
-
   <section id="projects">
-    <h2 class="section-title">Projects</h2>
-    <p class="section-sub">대표 프로젝트 세 가지입니다. (제목·설명·태그 모두 자리 표시)</p>
-    <div class="project-grid">
-      <article class="project-card">
-        <div class="project-thumb thumb-1">01</div>
-        <div class="project-body">
+    <div class="principle-grid">
+      <div class="principle-sticky">
+        <h2 class="section-title">대표<br>프로젝트</h2>
+        <p class="section-sub" style="margin-bottom:0">문제를 정의하고, 실측으로 검증하며<br>끝까지 배포한 작업들입니다.<br><span style="font-size:var(--seed-font-size-t2)">(내용은 자리 표시 — 실제 프로젝트로 교체 예정)</span></p>
+      </div>
+      <div class="principle-cards">
+        <a class="principle-card" href="#contact">
+          <div class="art art-pill"><div class="bar"><span></span><span></span><span></span><span></span></div></div>
           <h3>[프로젝트 이름 A]</h3>
-          <p>[문제 → 해결 → 결과를 두 문장으로 요약합니다.]</p>
-          <div class="chip-row"><span class="chip">[역할]</span><span class="chip">[기술/도구]</span><span class="chip">[연도]</span></div>
-        </div>
-      </article>
-      <article class="project-card">
-        <div class="project-thumb thumb-2">02</div>
-        <div class="project-body">
+          <p>[문제 → 해결 → 결과를 두 줄로.<br>어떤 지표가 얼마나 좋아졌는지 적습니다.]</p>
+        </a>
+        <a class="principle-card" href="#contact">
+          <div class="art art-lines">
+            <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+              <line x1="20" y1="110" x2="90" y2="10" stroke="#f60" stroke-width="14" stroke-linecap="round"/>
+              <line x1="80" y1="110" x2="150" y2="10" stroke="#00a05e" stroke-width="14" stroke-linecap="round" style="animation-delay:.4s"/>
+              <line x1="140" y1="110" x2="185" y2="45" stroke="#d6f5a2" stroke-width="14" stroke-linecap="round" style="animation-delay:.8s"/>
+            </svg>
+          </div>
           <h3>[프로젝트 이름 B]</h3>
-          <p>[문제 → 해결 → 결과를 두 문장으로 요약합니다.]</p>
-          <div class="chip-row"><span class="chip">[역할]</span><span class="chip">[기술/도구]</span><span class="chip">[연도]</span></div>
-        </div>
-      </article>
-      <article class="project-card">
-        <div class="project-thumb thumb-3">03</div>
-        <div class="project-body">
+          <p>[문제 → 해결 → 결과를 두 줄로.<br>맡은 역할과 사용 기술을 적습니다.]</p>
+        </a>
+        <a class="principle-card" href="#contact">
+          <div class="art art-grid">
+            <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+              <g stroke="#ffd5c0" stroke-width="1.5">
+                <line x1="0" y1="60" x2="320" y2="60"/><line x1="0" y1="120" x2="320" y2="120"/>
+                <line x1="80" y1="0" x2="80" y2="180"/><line x1="160" y1="0" x2="160" y2="180"/><line x1="240" y1="0" x2="240" y2="180"/>
+              </g>
+              <circle cx="160" cy="90" r="34" fill="#1a1c20"/>
+              <circle cx="240" cy="60" r="14" fill="#fff" style="animation-delay:1s"/>
+            </svg>
+          </div>
           <h3>[프로젝트 이름 C]</h3>
-          <p>[문제 → 해결 → 결과를 두 문장으로 요약합니다.]</p>
-          <div class="chip-row"><span class="chip">[역할]</span><span class="chip">[기술/도구]</span><span class="chip">[연도]</span></div>
-        </div>
-      </article>
+          <p>[문제 → 해결 → 결과를 두 줄로.<br>협업 규모나 기간을 적어도 좋습니다.]</p>
+        </a>
+      </div>
     </div>
   </section>
 
-  <section id="skills">
-    <h2 class="section-title">Skills</h2>
-    <p class="section-sub">주요 역량 키워드입니다. (자리 표시)</p>
-    <div class="skill-row">
-      <span class="skill">[스킬 1]</span>
-      <span class="skill">[스킬 2]</span>
-      <span class="skill">[스킬 3]</span>
-      <span class="skill">[스킬 4]</span>
-      <span class="skill">[스킬 5]</span>
-      <span class="skill">[스킬 6]</span>
+  <section id="insights">
+    <div class="sec-head">
+      <div>
+        <h2 class="section-title">인사이트</h2>
+        <p class="section-sub" style="margin-bottom:0">직접 실측하고 검증하며 쓴 분석과 튜토리얼</p>
+      </div>
+      <a class="more-link" href="blog.html">더보기 →</a>
+    </div>
+    <div class="showcase-row">
+      <a class="ins-card" href="blog.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><rect x="40" y="52" width="150" height="28" rx="14" fill="#f60"/><rect x="40" y="92" width="220" height="28" rx="14" fill="#ffd5c0"/><rect x="40" y="132" width="110" height="28" rx="14" fill="#1a1c20"/></svg></div>
+        <div class="label">SEED 디자인 시스템 분석</div><div class="cat">Analysis</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-tutorial.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#17191c"/><circle cx="160" cy="100" r="52" fill="#f60"/><path d="M148 78 L188 100 L148 122 Z" fill="#fff"/></svg></div>
+        <div class="label">움직이는 이미지의 정체</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-creation.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#d6f5a2"/><path d="M160 170 V110 M160 110 C160 70 110 80 90 40 M160 110 C160 70 210 80 230 40 M160 110 V40" stroke="#1a1c20" stroke-width="10" fill="none" stroke-linecap="round"/></svg></div>
+        <div class="label">Lottie 만들기 — 경로 개요</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-ae.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#1a1c20"/><line x1="30" y1="100" x2="290" y2="100" stroke="#555d6d" stroke-width="3"/><rect x="70" y="88" width="24" height="24" rx="4" fill="#f60" transform="rotate(45 82 100)"/><rect x="150" y="88" width="24" height="24" rx="4" fill="#00a05e" transform="rotate(45 162 100)"/><rect x="230" y="88" width="24" height="24" rx="4" fill="#fbdc65" transform="rotate(45 242 100)"/></svg></div>
+        <div class="label">① 정석: AE + Bodymovin</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-creator.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><circle cx="150" cy="100" r="46" fill="#f60"/><rect x="98" y="48" width="104" height="104" fill="none" stroke="#217cf9" stroke-width="3" stroke-dasharray="6 6"/><circle cx="98" cy="48" r="6" fill="#217cf9"/><circle cx="202" cy="48" r="6" fill="#217cf9"/><circle cx="98" cy="152" r="6" fill="#217cf9"/><circle cx="202" cy="152" r="6" fill="#217cf9"/><path d="M220 130 l26 40 l8 -18 l19 -2 Z" fill="#1a1c20"/></svg></div>
+        <div class="label">② 브라우저: Lottie Creator</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-figma.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#d6f5a2"/><rect x="30" y="50" width="70" height="100" rx="8" fill="#fff"/><rect x="125" y="50" width="70" height="100" rx="8" fill="#fff"/><rect x="220" y="50" width="70" height="100" rx="8" fill="#fff"/><circle cx="65" cy="100" r="14" fill="#f60"/><circle cx="160" cy="100" r="20" fill="#ff9364"/><circle cx="255" cy="100" r="14" fill="#00a05e"/></svg></div>
+        <div class="label">③ 피그마: Figma to Lottie</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-more" href="blog.html">전체 글 보기 →</a>
+    </div>
+  </section>
+
+  <section id="essay">
+    <div class="sec-head">
+      <div>
+        <h2 class="section-title">에세이</h2>
+        <p class="section-sub" style="margin-bottom:0">만들며 생각한 것들</p>
+      </div>
+      <a class="more-link" href="blog-essay-measure.html">더보기 →</a>
+    </div>
+    <div class="essay-grid">
+      <a class="essay-card" href="blog-essay-measure.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><line x1="40" y1="150" x2="280" y2="150" stroke="#1a1c20" stroke-width="6"/><g stroke="#1a1c20" stroke-width="4"><line x1="60" y1="150" x2="60" y2="128"/><line x1="100" y1="150" x2="100" y2="136"/><line x1="140" y1="150" x2="140" y2="128"/><line x1="180" y1="150" x2="180" y2="136"/><line x1="220" y1="150" x2="220" y2="128"/><line x1="260" y1="150" x2="260" y2="136"/></g><circle cx="140" cy="80" r="26" fill="#f60"/><circle cx="140" cy="80" r="40" fill="none" stroke="#ffd5c0" stroke-width="4"/></svg></div>
+        <h3>실측주의 — 추측하지 않고 확인한다</h3>
+        <p>그럴듯한 추측은 공짜지만, 확인은 언제나 남는 장사다</p>
+      </a>
+      <a class="essay-card" href="blog-essay-borrow.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#17191c"/><rect x="60" y="55" width="90" height="90" rx="16" fill="none" stroke="#555d6d" stroke-width="4"/><rect x="120" y="55" width="90" height="90" rx="16" fill="#f60"/><path d="M235 100 h40 m-14 -12 l14 12 l-14 12" stroke="#d6f5a2" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>훔치지 않고 배우기</h3>
+        <p>구조는 배우고, 얼굴은 만들지 않는다</p>
+      </a>
+      <a class="essay-card" href="blog.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#d6f5a2"/><rect x="70" y="45" width="180" height="14" rx="7" fill="#1a1c20"/><rect x="70" y="75" width="140" height="14" rx="7" fill="#1a1c20" opacity=".7"/><rect x="70" y="105" width="160" height="14" rx="7" fill="#1a1c20" opacity=".45"/><rect x="70" y="135" width="90" height="14" rx="7" fill="#f60"/></svg></div>
+        <h3>다음 글을 준비 중입니다</h3>
+        <p>전체 글 목록 보기 →</p>
+      </a>
     </div>
   </section>
 
@@ -431,7 +554,13 @@ footer {
 
 <footer>
   <div class="container">
-    © 2026 정지성 · Design tokens referenced from <a href="https://seed-design.io" style="text-decoration:underline">SEED Design System</a> (Daangn)
+    <div class="finale">
+      <div class="tag">Rooted in measurement.</div>
+      <div class="big"><span class="star">✳</span> JISUNG</div>
+    </div>
+    <div style="padding:var(--seed-x6) 0; font-size:var(--seed-font-size-t2); color:var(--seed-color-fg-neutral-subtle); text-align:center;">
+      © 2026 정지성 · Design tokens &amp; landing structure referenced from <a href="https://seed-design.io" style="text-decoration:underline">SEED Design System</a> (Daangn) — all artwork &amp; animations are original
+    </div>
   </div>
 </footer>
 
@@ -520,7 +649,7 @@ motionBtn.addEventListener('click', () => setMotion(!motionPlaying));
 // ============================================================
 if (!reduced) {
   const targets = document.querySelectorAll(
-    '.section-title, .section-sub, .about-card, .project-card, .skill, .contact-box'
+    '.section-title, .section-sub, .principle-card, .ins-card, .ins-more, .essay-card, .contact-box, .finale'
   );
   targets.forEach((el, i) => {
     el.classList.add('reveal');
