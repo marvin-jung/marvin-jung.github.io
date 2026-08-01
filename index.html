@@ -560,10 +560,14 @@ body.landing .nav ul a:hover { background: #ffffff14; }
 body.landing .nav .logo { font-size: 16px; }
 
 /* ===== 제목/카드 h3 줄 리빌 (SEED 랜딩 동작) ===== */
-.tr-mask { display: block; overflow: hidden; }
-.tr-line { display: block; transform: translateY(110%); transition: transform .7s cubic-bezier(.2,.6,.2,1); transition-delay: var(--tr-delay, 0s); }
-.reveal-title.in .tr-line { transform: translateY(0); }
-@media (prefers-reduced-motion: reduce){ .tr-line { transform:none; transition:none; } }
+/* SEED 코드 실측 스펙: 줄(\n)→단어 분해, inline-block overflow-hidden 마스크,
+   duration .7s / power3.out / ScrollTrigger start "top bottom" / 위로 벗어나면 리셋(rearm) */
+.tr-mask { display: inline-block; overflow: hidden; vertical-align: top; }
+.tr-line { display: inline-block; will-change: transform; transform: translateY(105%); }
+.reveal-title:not(.in) .tr-line { transition: none; transform: translateY(105%); } /* rearm: 즉시 리셋 */
+.reveal-title.in .tr-line { transform: translateY(0); transition: transform .7s cubic-bezier(.215,.61,.355,1); transition-delay: var(--tr-delay, 0s); }
+.tr-br { display: block; height: 0; }
+@media (prefers-reduced-motion: reduce){ .tr-line, .reveal-title:not(.in) .tr-line { transform:none; transition:none; } }
 
 /* ===== 에세이 순차 등장 강화 ===== */
 .essay-grid .essay-card.reveal { transform: translateY(56px); transition-duration: .7s; }
@@ -888,22 +892,35 @@ addEventListener('scroll', () => { lineReveal(); scrubArts(); }, { passive: true
 lineReveal(); scrubArts();
 
 
-// 섹션 제목·카드 h3 줄 리빌 (SEED 랜딩 동작): 텍스트를 마스크 라인으로 감싸고 진입 시 상승
+// 섹션 제목·부제·카드 h3 리빌 — SEED 코드 스펙 재현: 단어 단위 마스크 상승, rearm
 if (!motionReduced) {
-  const wrapLines = el => {
+  const wrapWords = el => {
     if (el.dataset.tr) return;
     el.dataset.tr = '1';
-    const parts = el.innerHTML.split(/<br\s*\/?>/i);
-    el.innerHTML = parts.map((p,i) => '<span class="tr-mask"><span class="tr-line" style="--tr-delay:'+(i*0.12)+'s">'+p+'</span></span>').join('');
+    let w = 0;
+    const lines = el.innerHTML.split(/<br\s*\/?>/i);
+    el.innerHTML = lines.map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      if (trimmed.includes('<')) { // 중첩 태그가 있는 줄은 줄 단위 마스크
+        return '<span class="tr-mask" style="display:block"><span class="tr-line" style="display:block; --tr-delay:' + (w++ * 0.055) + 's">' + line + '</span></span>';
+      }
+      return trimmed.split(/\s+/).map(word =>
+        '<span class="tr-mask"><span class="tr-line" style="--tr-delay:' + (w++ * 0.055) + 's">' + word + '</span></span>'
+      ).join(' ');
+    }).join('<span class="tr-br"></span>');
     el.classList.add('reveal-title');
   };
-  document.querySelectorAll('.section-title, .section-sub, .principle-card h3, .essay-grid .essay-card h3').forEach(wrapLines);
+  document.querySelectorAll('.section-title, .section-sub, .principle-card h3, .essay-grid .essay-card h3').forEach(wrapWords);
+  // ScrollTrigger start "top bottom" + onLeaveBack 리셋(rearm) 재현
   const io2 = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting || e.boundingClientRect.bottom < 0) { e.target.classList.add('in'); io2.unobserve(e.target); }
-  }), { threshold: 0, rootMargin: '0px 0px -12% 0px' });
+    if (e.isIntersecting) e.target.classList.add('in');
+    else if (e.boundingClientRect.top >= innerHeight) e.target.classList.remove('in'); // 아래로 벗어남 = 위로 스크롤 → 리셋
+  }), { threshold: 0 });
   document.querySelectorAll('.reveal-title').forEach(el => io2.observe(el));
   addEventListener('scroll', () => document.querySelectorAll('.reveal-title:not(.in)').forEach(el => {
-    if (el.getBoundingClientRect().top < innerHeight*0.92) el.classList.add('in');
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight && r.bottom > 0) el.classList.add('in');
   }), { passive: true });
 }
 
