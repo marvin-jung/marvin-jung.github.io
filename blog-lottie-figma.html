@@ -384,12 +384,16 @@ function toggleTheme(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 
 
 const tocLinks = [...document.querySelectorAll('.toc a')];
 const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href')));
-const spy = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
-  });
-}, { rootMargin: '-20% 0px -70% 0px' });
-sections.forEach(s => s && spy.observe(s));
+// 스크롤 계산식 스파이: 뷰포트 30% 지점을 지난 마지막 섹션이 활성.
+// 페이지 바닥에 닿으면 마지막 항목 강제 활성 → 지렁이가 챕터 끝까지 내려간다.
+const updateSpy = () => {
+  let active = sections.find(Boolean);
+  for (const s of sections) if (s && s.getBoundingClientRect().top <= innerHeight * 0.3) active = s;
+  if (innerHeight + scrollY >= document.documentElement.scrollHeight - 8) active = [...sections].reverse().find(Boolean);
+  if (active) tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + active.id));
+};
+addEventListener('scroll', updateSpy, { passive: true });
+updateSpy();
 
 // TOC 지렁이 마커 — SEED(Fumadocs clerk) 코드 방식: 활성 구간을 레일 위에 clip처럼 표시,
 // 위/아래 가장자리를 서로 다른 속도로 보간 → 스크롤 시 늘었다 줄어드는 지렁이 움직임
