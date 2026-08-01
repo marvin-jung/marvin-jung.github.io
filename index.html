@@ -426,7 +426,7 @@ footer {
 .intro-desc .btn-row { margin-top: var(--seed-x6); }
 /* 거대 마크 — 풀블리드, 좌측 크롭 (SEED 인트로 마크 구조) */
 .intro-mark {
-  width: 100%; height: clamp(300px, 46vw, 620px);
+  width: 100%; height: max(280px, 34vw); /* 34vw 고정 → slice 크롭 세로창 상수화(잘림 방지) */
   margin-top: var(--seed-x10);
   line-height: 0; pointer-events: none;
 }
@@ -574,14 +574,12 @@ body.landing .nav .logo { font-size: 16px; }
 .essay-grid .essay-card.reveal.in { transform: translateY(0); }
 
 /* ===== 더보기 버튼: 색 순환 + 팝 스케일 등장/퇴장 ===== */
-/* SEED 방식(코드 확인: data-cursor="text" 커스텀 커서): 커서를 대신하는 '더보기' 필.
-   mix-blend-mode: difference — 배경(카드 색)에 따라 필 색이 계속 달라진다 */
+/* 더보기 커서 필: 호버 중인 카드의 대표색을 따라 부드럽게 변화 (요소 단위 얼룩 없음) */
 .marquee-more {
-  background:#fff; color:#000; opacity:1;
-  mix-blend-mode: difference;
+  background:#f60; color:#fff; opacity:1;
   transform: translate(-50%,-50%) scale(0);
-  transition: transform .38s cubic-bezier(.34,1.56,.64,1);
-  box-shadow: none; pointer-events: none;
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1), background-color .3s ease, color .3s ease;
+  box-shadow: var(--seed-shadow-s2); pointer-events: none;
 }
 .marquee-viewport:hover .marquee-more { transform: translate(-50%,-50%) scale(1); pointer-events: auto; opacity:1; }
 </style>
@@ -818,7 +816,7 @@ const seedAnimData = (() => {
   const EZ = {o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}};
   const spokes = [0, 45, 90, 135].map((deg, i) => ({
     ty: "gr", it: [
-      { ty: "rc", p: {a:0,k:[0,0]}, s: {a:0,k:[560,96]}, r: {a:0,k:48} },
+      { ty: "rc", p: {a:0,k:[0,0]}, s: {a:0,k:[500,88]}, r: {a:0,k:44} },
       { ty: "fl", c: {a:0,k:[1,.4,0,1]}, o: {a:0,k:100} },
       { ty: "tr", p: {a:0,k:[0,0]}, a: {a:0,k:[0,0]}, s: {a:0,k:[100,100]}, r: {a:0,k:deg}, o: {a:0,k:100} }
     ]
@@ -827,7 +825,7 @@ const seedAnimData = (() => {
     layers:[{ ddd:0, ind:1, ty:4, nm:"asterisk", sr:1, ao:0, ip:0, op:240, st:0,
       ks:{ o:{a:0,k:100},
         r:{a:1,k:[{t:0,s:[0],...EZ},{t:240,s:[45]}]},
-        p:{a:0,k:[420,400,0]}, a:{a:0,k:[0,0,0]},
+        p:{a:0,k:[170,380,0]}, a:{a:0,k:[0,0,0]},
         s:{a:1,k:[{t:0,s:[100,100,100],...EZ},{t:120,s:[104,104,100],...EZ},{t:240,s:[100,100,100]}]} },
       shapes: spokes }] };
 })();
@@ -948,6 +946,20 @@ if (track && !motionReduced) {
       bx += (mx - bx) * Math.min(1, dt*10);
       by += (my - by) * Math.min(1, dt*10);
       moreBtn.style.left = bx + 'px'; moreBtn.style.top = by + 'px';
+      // 호버 중인 카드의 대표색(썸네일 첫 rect fill)으로 배경 전환 — 카드 단위, .3s 스무딩
+      const vr = vp.getBoundingClientRect();
+      const under = document.elementFromPoint(vr.left + mx, vr.top + my);
+      const card = under && under.closest ? under.closest('.ins-card') : null;
+      if (card) {
+        const rect = card.querySelector('.thumb rect');
+        const c = rect ? rect.getAttribute('fill') : '#f60';
+        if (moreBtn.dataset.c !== c) {
+          moreBtn.dataset.c = c;
+          moreBtn.style.background = c;
+          const light = ['#d6f5a2','#fff2ec','#fbdc65','#ffd5c0'].includes(c);
+          moreBtn.style.color = light ? '#1a1c20' : '#fff';
+        }
+      }
     }
     requestAnimationFrame(tick);
   })(last);
