@@ -427,7 +427,7 @@ footer {
 .intro-desc .btn-row { margin-top: var(--seed-x6); }
 /* 거대 마크 — 풀블리드, 좌측 크롭 (SEED 인트로 마크 구조) */
 .intro-mark {
-  width: 100%; height: clamp(300px, 46vw, 620px);
+  width: 100%; height: max(280px, 34vw); /* 34vw 고정 → slice 크롭 세로창 상수화(잘림 방지) */
   margin-top: var(--seed-x10);
   line-height: 0; pointer-events: none;
 }
@@ -561,25 +561,64 @@ body.landing .nav ul a:hover { background: #ffffff14; }
 body.landing .nav .logo { font-size: 16px; }
 
 /* ===== 제목/카드 h3 줄 리빌 (SEED 랜딩 동작) ===== */
-.tr-mask { display: block; overflow: hidden; }
-.tr-line { display: block; transform: translateY(110%); transition: transform .7s cubic-bezier(.2,.6,.2,1); transition-delay: var(--tr-delay, 0s); }
-.reveal-title.in .tr-line { transform: translateY(0); }
-@media (prefers-reduced-motion: reduce){ .tr-line { transform:none; transition:none; } }
+/* SEED 코드 실측 스펙: 줄(\n)→단어 분해, inline-block overflow-hidden 마스크,
+   duration .7s / power3.out / ScrollTrigger start "top bottom" / 위로 벗어나면 리셋(rearm) */
+.tr-mask { display: inline-block; overflow: hidden; vertical-align: top; white-space: nowrap; }
+.tr-line { display: inline-block; will-change: transform; transform: translateY(105%); }
+.reveal-title:not(.in) .tr-line { transition: none; transform: translateY(105%); } /* rearm: 즉시 리셋 */
+.reveal-title.in .tr-line { transform: translateY(0); transition: transform .7s cubic-bezier(.215,.61,.355,1); transition-delay: var(--tr-delay, 0s); }
+.tr-br { display: block; height: 0; }
+@media (prefers-reduced-motion: reduce){ .tr-line, .reveal-title:not(.in) .tr-line { transform:none; transition:none; } }
 
 /* ===== 에세이 순차 등장 강화 ===== */
 .essay-grid .essay-card.reveal { transform: translateY(56px); transition-duration: .7s; }
 .essay-grid .essay-card.reveal.in { transform: translateY(0); }
 
 /* ===== 더보기 버튼: 색 순환 + 팝 스케일 등장/퇴장 ===== */
-@keyframes moreCycle { 0%{background:#f60} 25%{background:#00a05e} 50%{background:#217cf9} 75%{background:#e14d00} 100%{background:#f60} }
+/* 더보기 커서 필: 호버 중인 카드의 대표색을 따라 부드럽게 변화 (요소 단위 얼룩 없음) */
 .marquee-more {
   background:#f60; color:#fff; opacity:1;
-  animation: moreCycle 3.2s linear infinite;
   transform: translate(-50%,-50%) scale(0);
-  transition: transform .38s cubic-bezier(.34,1.56,.64,1);
-  box-shadow: none; pointer-events: none;
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1), background-color .3s ease, color .3s ease;
+  box-shadow: var(--seed-shadow-s2); pointer-events: none;
 }
 .marquee-viewport:hover .marquee-more { transform: translate(-50%,-50%) scale(1); pointer-events: auto; opacity:1; }
+
+/* 에세이 섹션 커서 필 (마퀴와 동일 시각언어) */
+.pill-host { position: relative; }
+.cursor-pill {
+  position: absolute; left: 0; top: 0; z-index: 5;
+  background: #f60; color: #fff;
+  font-weight: var(--seed-font-weight-bold);
+  padding: var(--seed-x3) var(--seed-x8); border-radius: var(--seed-radius-full);
+  transform: translate(-50%,-50%) scale(0);
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1), background-color .3s ease, color .3s ease;
+  pointer-events: none; will-change: left, top;
+}
+.pill-host:hover .cursor-pill { transform: translate(-50%,-50%) scale(1); }
+@media (prefers-reduced-motion: reduce){ .cursor-pill { display:none; } }
+
+/* ===== 모바일 보정 (SEED 실측: 제목 28px, 카드 250px/갭10, 로고+햄버거 내비) ===== */
+@media (max-width: 640px){
+  body.landing .marquee-track { gap: 10px; padding-left: 10px; }
+  body.landing .marquee-track .ins-card, body.landing .marquee-track .ins-more { width: 250px; }
+  .intro-desc .lines { font-size: 16px; }
+  .intro-band h1 { font-size: clamp(28px, 8vw, 40px); }
+  body.landing .nav { padding: 6px 8px 6px 18px; gap: var(--seed-x3); }
+  body.landing .nav ul { display: none; position: absolute; top: 56px; left: 50%; transform: translateX(-50%);
+    flex-direction: column; background: rgba(26,28,32,.97); border-radius: var(--seed-radius-r4);
+    padding: var(--seed-x3); min-width: 200px; box-shadow: var(--seed-shadow-s3); }
+  body.landing .nav.open ul { display: flex; }
+  body.landing .nav-toggle { display: inline-flex; }
+}
+.nav-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 9999px; border: none;
+  background: transparent; color: #fff; font-size: 18px; cursor: pointer;
+}
+
+/* 모바일 오버플로 수정: flex/grid 아이템이 콘텐츠 폭으로 늘어나 줄바꿈을 막는 문제 */
+.sec-head > div, .principle-grid > * { min-width: 0; }
 
 .list-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--seed-x6); }
 @media (max-width: 980px){ .list-grid { grid-template-columns:repeat(2,1fr); } }

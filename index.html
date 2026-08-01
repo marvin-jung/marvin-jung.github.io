@@ -582,6 +582,44 @@ body.landing .nav .logo { font-size: 16px; }
   box-shadow: var(--seed-shadow-s2); pointer-events: none;
 }
 .marquee-viewport:hover .marquee-more { transform: translate(-50%,-50%) scale(1); pointer-events: auto; opacity:1; }
+
+/* 에세이 섹션 커서 필 (마퀴와 동일 시각언어) */
+.pill-host { position: relative; }
+.cursor-pill {
+  position: absolute; left: 0; top: 0; z-index: 5;
+  background: #f60; color: #fff;
+  font-weight: var(--seed-font-weight-bold);
+  padding: var(--seed-x3) var(--seed-x8); border-radius: var(--seed-radius-full);
+  transform: translate(-50%,-50%) scale(0);
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1), background-color .3s ease, color .3s ease;
+  pointer-events: none; will-change: left, top;
+}
+.pill-host:hover .cursor-pill { transform: translate(-50%,-50%) scale(1); }
+@media (prefers-reduced-motion: reduce){ .cursor-pill { display:none; } }
+
+/* ===== 모바일 보정 (SEED 실측: 제목 28px, 카드 250px/갭10, 로고+햄버거 내비) ===== */
+@media (max-width: 640px){
+  body.landing .marquee-track { gap: 10px; padding-left: 10px; }
+  body.landing .marquee-track .ins-card, body.landing .marquee-track .ins-more { width: 250px; }
+  .intro-desc .lines { font-size: 16px; }
+  .intro-band h1 { font-size: clamp(28px, 8vw, 40px); }
+  body.landing .nav { padding: 6px 8px 6px 18px; gap: var(--seed-x3); }
+  body.landing .nav ul { display: none; position: absolute; top: 56px; left: 50%; transform: translateX(-50%);
+    flex-direction: column; background: rgba(26,28,32,.97); border-radius: var(--seed-radius-r4);
+    padding: var(--seed-x3); min-width: 200px; box-shadow: var(--seed-shadow-s3); }
+  body.landing .nav.open ul { display: flex; }
+  body.landing .nav-toggle { display: inline-flex; }
+}
+.nav-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 9999px; border: none;
+  background: transparent; color: #fff; font-size: 18px; cursor: pointer;
+}
+
+/* 모바일 오버플로 수정: flex/grid 아이템이 콘텐츠 폭으로 늘어나 줄바꿈을 막는 문제 */
+.sec-head > div, .principle-grid > * { min-width: 0; }
+
+@media (max-width: 860px){ body.landing .principle-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body class="landing">
@@ -589,6 +627,7 @@ body.landing .nav .logo { font-size: 16px; }
 <header>
   <div class="container nav">
     <a class="logo" href="#top"><span class="logo-dot"></span>정지성</a>
+    <button class="nav-toggle" aria-label="메뉴" onclick="this.closest('.nav').classList.toggle('open')">☰</button>
     <ul>
       <li><a href="#projects">Projects</a></li>
       <li><a href="insight.html">Insight</a></li>
@@ -742,7 +781,8 @@ body.landing .nav .logo { font-size: 16px; }
       </div>
       <a class="more-link" href="essay.html">더보기 →</a>
     </div>
-    <div class="essay-grid">
+    <div class="essay-grid pill-host" id="essayHost">
+      <span class="cursor-pill" id="essayPill">더보기</span>
       <a class="essay-card" href="blog-essay-measure.html">
         <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><line x1="40" y1="150" x2="280" y2="150" stroke="#1a1c20" stroke-width="6"/><g stroke="#1a1c20" stroke-width="4"><line x1="60" y1="150" x2="60" y2="128"/><line x1="100" y1="150" x2="100" y2="136"/><line x1="140" y1="150" x2="140" y2="128"/><line x1="180" y1="150" x2="180" y2="136"/><line x1="220" y1="150" x2="220" y2="128"/><line x1="260" y1="150" x2="260" y2="136"/></g><circle cx="140" cy="80" r="26" fill="#f60"/><circle cx="140" cy="80" r="40" fill="none" stroke="#ffd5c0" stroke-width="4"/></svg></div>
         <h3>실측주의 — 추측하지 않고 확인한다</h3>
@@ -962,6 +1002,29 @@ if (track && !motionReduced) {
     }
     requestAnimationFrame(tick);
   })(last);
+}
+
+
+// 에세이 섹션 더보기 필 — 마퀴와 동일한 커서 추적/카드색 로직
+const essayHost = document.getElementById('essayHost');
+const essayPill = document.getElementById('essayPill');
+if (essayHost && essayPill && !motionReduced) {
+  let ex = 0, ey = 0, ebx = 0, eby = 0, eHover = false, eLast = performance.now();
+  essayHost.addEventListener('mouseenter', e => { eHover = true; const r = essayHost.getBoundingClientRect(); ebx = e.clientX - r.left; eby = e.clientY - r.top; });
+  essayHost.addEventListener('mouseleave', () => eHover = false);
+  essayHost.addEventListener('mousemove', e => { const r = essayHost.getBoundingClientRect(); ex = e.clientX - r.left; ey = e.clientY - r.top;
+    const card = e.target.closest ? e.target.closest('.essay-card') : null;
+    if (card) { const rect = card.querySelector('.thumb rect');
+      const c = rect ? rect.getAttribute('fill') : '#f60';
+      if (essayPill.dataset.c !== c) { essayPill.dataset.c = c;
+        essayPill.style.background = c;
+        essayPill.style.color = ['#d6f5a2','#fff2ec','#fbdc65','#ffd5c0'].includes(c) ? '#1a1c20' : '#fff'; } } });
+  (function epTick(now){
+    const dt = Math.min(0.05, (now - eLast)/1000); eLast = now;
+    if (eHover) { ebx += (ex - ebx) * Math.min(1, dt*10); eby += (ey - eby) * Math.min(1, dt*10);
+      essayPill.style.left = ebx + 'px'; essayPill.style.top = eby + 'px'; }
+    requestAnimationFrame(epTick);
+  })(eLast);
 }
 
 // ============================================================
