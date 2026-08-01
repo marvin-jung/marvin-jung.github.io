@@ -481,6 +481,46 @@ body.landing footer { border: none; margin-top: var(--seed-x16); padding: 0; }
 .finale-cols .cols a { display: block; margin-bottom: var(--seed-x2); color: #47270f; }
 .finale-cols .cols a:hover { color: #1a1c20; }
 .finale-big { font-size: clamp(90px, 17vw, 300px); font-weight: 800; letter-spacing: -0.045em; line-height: .9; white-space: nowrap; margin-top: var(--seed-x10); transform: translateY(8%); }
+
+/* ===== 모션 동작 4종 (SEED 실측 + 사용자 관찰 스펙) ===== */
+/* 전역 모션 정지 (우하단 토글) */
+body.motion-off * { animation-play-state: paused !important; }
+
+/* A. 1막 모자이크 타일 애니메이션 */
+@keyframes tilePulse { 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.12);} }
+@keyframes tileSway  { 0%,100%{ transform:rotate(-4deg);} 50%{ transform:rotate(4deg);} }
+@keyframes tileSpin  { 0%{ transform:rotate(0);} 100%{ transform:rotate(360deg);} }
+@keyframes tileHop   { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10%);} }
+.mosaic .anim-pulse { animation: tilePulse 3.2s ease-in-out infinite; transform-origin:center; }
+.mosaic .anim-sway  { animation: tileSway 3.8s ease-in-out infinite; transform-origin:50% 80%; }
+.mosaic .anim-spin  { animation: tileSpin 14s linear infinite; transform-origin:center; }
+.mosaic .anim-hop   { animation: tileHop 2.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){ .mosaic svg *, .mosaic svg { animation:none !important; } }
+
+/* B. 인트로 설명: 22px(실측) + 줄 단위 마스크 리빌 (스크롤 연동) */
+.intro-desc .lines { font-size: 22px; line-height: 1.6; color: #b0b3ba; }
+.intro-desc .mask { display: block; overflow: hidden; }
+.intro-desc .mask .line { display: block; transform: translateY(110%); opacity: 0; will-change: transform, opacity; }
+@media (prefers-reduced-motion: reduce){ .intro-desc .mask .line { transform:none; opacity:1; } }
+
+/* C. 원칙 아트 — 스크롤 스크럽 (CSS 루프 제거, JS가 진행률 구동) */
+.art-pill .bar { animation: none; will-change: transform; }
+.art-lines line { animation: none; will-change: stroke-dashoffset; }
+.art-grid circle { animation: none; will-change: transform; }
+
+/* D. 기반 무한 마퀴 */
+.marquee-viewport { position: relative; overflow: hidden; width: 100vw; margin-left: calc(50% - 50vw); padding: var(--seed-x2) 0 var(--seed-x5); }
+.marquee-track { display: flex; gap: var(--seed-x5); width: max-content; will-change: transform; padding-left: var(--seed-x5); }
+.marquee-track .ins-card, .marquee-track .ins-more { width: 430px; flex: none; }
+.marquee-more {
+  position: absolute; left: 50%; top: 42%; transform: translate(-50%,-50%) scale(.9);
+  background: #fff; color: #1a1c20; font-weight: var(--seed-font-weight-bold);
+  padding: var(--seed-x3) var(--seed-x8); border-radius: var(--seed-radius-full);
+  box-shadow: var(--seed-shadow-s3); opacity: 0; pointer-events: none;
+  transition: opacity var(--seed-duration-d3), transform var(--seed-duration-d3); z-index: 5;
+}
+.marquee-viewport:hover .marquee-more { opacity: 1; transform: translate(-50%,-50%) scale(1); pointer-events: auto; }
+@media (prefers-reduced-motion: reduce){ .marquee-viewport { overflow-x: auto; } }
 </style>
 </head>
 <body class="landing">
@@ -506,16 +546,18 @@ body.landing footer { border: none; margin-top: var(--seed-x16); padding: 0; }
       추측하지 않고 실측합니다.<br>확인된 것만 만들고, 만든 것은 끝까지 배포합니다.
       <small>이 사이트의 모든 수치·색·모션은 실제 측정에서 왔고,<br>모든 그래픽과 애니메이션은 직접 만들었습니다.</small>
     </div>
-    <div class="mosaic" aria-hidden="true"><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#f60"/><circle cx="100" cy="100" r="55" fill="#1a1c20"/></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#d6f5a2"/><path d="M100 160 V95 M100 95 C100 60 65 70 50 35 M100 95 C100 60 135 70 150 35" stroke="#1a1c20" stroke-width="9" fill="none" stroke-linecap="round"/></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#17191c"/><g stroke="#f60" stroke-width="8" stroke-linecap="round"><line x1="60" y1="150" x2="140" y2="50"/><line x1="100" y1="150" x2="160" y2="80" stroke="#00a05e"/></g></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#ffd5c0"/><rect x="45" y="45" width="110" height="110" rx="24" fill="#f60"/></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#1a1c20"/><circle cx="70" cy="70" r="26" fill="#fbdc65"/><circle cx="130" cy="130" r="26" fill="#217cf9"/></svg></div><div><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#00a05e"/><path d="M60 120 h80 M100 80 v80" stroke="#d6f5a2" stroke-width="14" stroke-linecap="round"/></svg></div></div>
+    <div class="mosaic" aria-hidden="true" id="mosaic"><div><svg class="anim-pulse" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#f60"/><circle cx="100" cy="100" r="55" fill="#1a1c20"/></svg></div><div><svg class="anim-sway" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#d6f5a2"/><path d="M100 160 V95 M100 95 C100 60 65 70 50 35 M100 95 C100 60 135 70 150 35" stroke="#1a1c20" stroke-width="9" fill="none" stroke-linecap="round"/></svg></div><div><svg class="anim-hop" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#17191c"/><g stroke="#f60" stroke-width="8" stroke-linecap="round"><line x1="60" y1="150" x2="140" y2="50"/><line x1="100" y1="150" x2="160" y2="80" stroke="#00a05e"/></g></svg></div><div><svg class="anim-spin" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#ffd5c0"/><rect x="45" y="45" width="110" height="110" rx="24" fill="#f60"/></svg></div><div><svg class="anim-pulse" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#1a1c20"/><circle cx="70" cy="70" r="26" fill="#fbdc65"/><circle cx="130" cy="130" r="26" fill="#217cf9"/></svg></div><div><svg class="anim-hop" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#00a05e"/><path d="M60 120 h80 M100 80 v80" stroke="#d6f5a2" stroke-width="14" stroke-linecap="round"/></svg></div></div>
   </section>
 
   <section class="intro-band">
     <div class="intro-inner">
       <h1>안녕하세요,<br><span class="accent">정지성</span>입니다.</h1>
       <div class="intro-desc">
-        [한 줄 소개를 여기에 — 예: 사용자 경험을 뿌리부터<br>
-        단단하게 설계하는 ○○ 직군입니다.<br>
-        추측 대신 실측으로 확인하며 만듭니다.]
+        <div class="lines" id="introLines">
+          <span class="mask"><span class="line">[한 줄 소개 — 사용자 경험을 뿌리부터</span></span>
+          <span class="mask"><span class="line">단단하게 설계하는 ○○ 직군입니다.]</span></span>
+          <span class="mask"><span class="line">추측 대신 실측으로 확인하며 만듭니다.</span></span>
+        </div>
         <div class="btn-row">
           <a class="btn btn-brand" href="#projects">프로젝트 보기</a>
           <a class="btn btn-neutral" href="mailto:escomjung@gmail.com" style="background:#212429; color:#fff; border-color:#33373e;">이메일 보내기</a>
@@ -574,7 +616,8 @@ body.landing footer { border: none; margin-top: var(--seed-x16); padding: 0; }
       </div>
       <a class="more-link" href="blog.html">더보기 →</a>
     </div>
-    <div class="showcase-row">
+    <div class="marquee-viewport" id="marqueeVp">
+      <div class="marquee-track" id="marqueeTrack">
       <a class="ins-card" href="blog.html">
         <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><rect x="40" y="52" width="150" height="28" rx="14" fill="#f60"/><rect x="40" y="92" width="220" height="28" rx="14" fill="#ffd5c0"/><rect x="40" y="132" width="110" height="28" rx="14" fill="#1a1c20"/></svg></div>
         <div class="label">SEED 디자인 시스템 분석</div><div class="cat">Analysis</div>
@@ -600,6 +643,34 @@ body.landing footer { border: none; margin-top: var(--seed-x16); padding: 0; }
         <div class="label">③ 피그마: Figma to Lottie</div><div class="cat">Tutorial</div>
       </a>
       <a class="ins-more" href="blog.html">전체 글 보기 →</a>
+    
+      <a class="ins-card" href="blog.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><rect x="40" y="52" width="150" height="28" rx="14" fill="#f60"/><rect x="40" y="92" width="220" height="28" rx="14" fill="#ffd5c0"/><rect x="40" y="132" width="110" height="28" rx="14" fill="#1a1c20"/></svg></div>
+        <div class="label">SEED 디자인 시스템 분석</div><div class="cat">Analysis</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-tutorial.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#17191c"/><circle cx="160" cy="100" r="52" fill="#f60"/><path d="M148 78 L188 100 L148 122 Z" fill="#fff"/></svg></div>
+        <div class="label">움직이는 이미지의 정체</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-creation.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#d6f5a2"/><path d="M160 170 V110 M160 110 C160 70 110 80 90 40 M160 110 C160 70 210 80 230 40 M160 110 V40" stroke="#1a1c20" stroke-width="10" fill="none" stroke-linecap="round"/></svg></div>
+        <div class="label">Lottie 만들기 — 경로 개요</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-ae.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#1a1c20"/><line x1="30" y1="100" x2="290" y2="100" stroke="#555d6d" stroke-width="3"/><rect x="70" y="88" width="24" height="24" rx="4" fill="#f60" transform="rotate(45 82 100)"/><rect x="150" y="88" width="24" height="24" rx="4" fill="#00a05e" transform="rotate(45 162 100)"/><rect x="230" y="88" width="24" height="24" rx="4" fill="#fbdc65" transform="rotate(45 242 100)"/></svg></div>
+        <div class="label">① 정석: AE + Bodymovin</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-creator.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><circle cx="150" cy="100" r="46" fill="#f60"/><rect x="98" y="48" width="104" height="104" fill="none" stroke="#217cf9" stroke-width="3" stroke-dasharray="6 6"/><circle cx="98" cy="48" r="6" fill="#217cf9"/><circle cx="202" cy="48" r="6" fill="#217cf9"/><circle cx="98" cy="152" r="6" fill="#217cf9"/><circle cx="202" cy="152" r="6" fill="#217cf9"/><path d="M220 130 l26 40 l8 -18 l19 -2 Z" fill="#1a1c20"/></svg></div>
+        <div class="label">② 브라우저: Lottie Creator</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-card" href="blog-lottie-figma.html">
+        <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#d6f5a2"/><rect x="30" y="50" width="70" height="100" rx="8" fill="#fff"/><rect x="125" y="50" width="70" height="100" rx="8" fill="#fff"/><rect x="220" y="50" width="70" height="100" rx="8" fill="#fff"/><circle cx="65" cy="100" r="14" fill="#f60"/><circle cx="160" cy="100" r="20" fill="#ff9364"/><circle cx="255" cy="100" r="14" fill="#00a05e"/></svg></div>
+        <div class="label">③ 피그마: Figma to Lottie</div><div class="cat">Tutorial</div>
+      </a>
+      <a class="ins-more" href="blog.html">전체 글 보기 →</a>
+    </div>
+      <a class="marquee-more" href="blog.html">더보기 →</a>
     </div>
   </section>
 
@@ -713,11 +784,71 @@ let motionPlaying = !reduced;
 function setMotion(on){
   motionPlaying = on;
   on ? heroAnim.play() : heroAnim.pause();
+  document.body.classList.toggle('motion-off', !on); // 모자이크·마퀴·CSS 애니메이션 일괄 제어
   motionBtn.textContent = on ? '❚❚' : '▶';
   motionBtn.setAttribute('aria-label', on ? '애니메이션 일시정지' : '애니메이션 재생');
 }
 setMotion(motionPlaying);
 motionBtn.addEventListener('click', () => setMotion(!motionPlaying));
+
+
+// ===== SEED 모션 동작 4종 =====
+const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// (B) 인트로 설명 줄 리빌 — 스크롤 진행률에 줄 단위 매핑 (역스크롤 시 되감김)
+const introLines = [...document.querySelectorAll('#introLines .line')];
+function lineReveal(){
+  if (motionReduced || !introLines.length) return;
+  const band = document.querySelector('.intro-band');
+  const r = band.getBoundingClientRect();
+  // 밴드 상단이 화면 70% 지점 지날 때 시작 → 30% 지점까지 진행
+  const p = Math.min(1, Math.max(0, (innerHeight*0.7 - r.top) / (innerHeight*0.55)));
+  introLines.forEach((el, i) => {
+    const lp = Math.min(1, Math.max(0, p*introLines.length - i)); // 줄별 0..1
+    el.style.transform = 'translateY(' + (110*(1-lp)) + '%)';
+    el.style.opacity = lp;
+  });
+}
+
+// (C) 원칙 아트 스크롤 스크럽 — 스크롤 중에만 진행, 멈추면 그 자리에 pause
+function scrubArts(){
+  if (motionReduced) return;
+  document.querySelectorAll('.principle-card .art').forEach(art => {
+    const r = art.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (innerHeight - r.top) / (innerHeight + r.height))); // 뷰포트 통과 진행률
+    const bar = art.querySelector('.bar');
+    if (bar) bar.style.transform = 'translateX(' + (-8 + p*16) + '%)';
+    art.querySelectorAll('line').forEach((ln, i) => {
+      const lp = Math.min(1, Math.max(0, p*1.6 - i*0.18));
+      ln.style.strokeDashoffset = 220*(1-lp);
+    });
+    const c = art.querySelector('circle:last-of-type');
+    if (c && art.classList.contains('art-grid')) c.style.transform = 'translateY(' + ((1-p)*40-20) + 'px)';
+  });
+}
+addEventListener('scroll', () => { lineReveal(); scrubArts(); }, { passive: true });
+lineReveal(); scrubArts();
+
+// (D) 기반 무한 마퀴 — 기본 40px/s, 호버 시 6px/s로 감속(부드러운 보간), 더보기는 CSS로 노출
+const track = document.getElementById('marqueeTrack');
+const vp = document.getElementById('marqueeVp');
+if (track && !motionReduced) {
+  let x = 0, v = 40, target = 40, last = performance.now(), half = 0;
+  const measure = () => { half = track.scrollWidth / 2; };
+  measure(); addEventListener('resize', measure);
+  vp.addEventListener('mouseenter', () => target = 6);
+  vp.addEventListener('mouseleave', () => target = 40);
+  (function tick(now){
+    const dt = Math.min(0.05, (now - last)/1000); last = now;
+    if (!document.body.classList.contains('motion-off')) {
+      v += (target - v) * Math.min(1, dt*6); // 감속/가속 보간
+      x -= v * dt;
+      if (half && -x >= half) x += half; // 절반 지점에서 이음새 없이 순환
+      track.style.transform = 'translate3d(' + x + 'px,0,0)';
+    }
+    requestAnimationFrame(tick);
+  })(last);
+}
 
 // ============================================================
 // 스크롤 등장 효과 — IntersectionObserver + SEED 실측값(.5s, 1rem)
