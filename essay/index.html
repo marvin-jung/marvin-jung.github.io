@@ -476,6 +476,9 @@ body.landing .principle-grid { grid-template-columns: 340px minmax(0,1fr); }
 body.landing footer { border: none; margin-top: var(--seed-x16); padding: 0; }
 .finale-bleed { width: 100vw; margin-left: calc(50% - 50vw); background: var(--seed-color-bg-brand-solid); color: #1a1c20; padding: var(--seed-x16) 0 0; overflow: hidden; }
 .finale-inner { max-width: 1400px; margin: 0 auto; padding: 0 var(--seed-x6); }
+.finale-bleed, .finale-bleed * { text-align: left; }
+.finale-big .star { width: .72em; height: .72em; display: inline-block; vertical-align: .04em; transform-origin: center; }
+.finale-big:hover .star { animation: spinStar 2.5s ease-in-out; }
 .finale-cols { display: flex; justify-content: space-between; gap: var(--seed-x8); flex-wrap: wrap; }
 .finale-cols .tag { font-weight: 800; font-size: var(--seed-font-size-t6); }
 .finale-cols .cols { display: flex; gap: var(--seed-x16); font-size: var(--seed-font-size-t3); }
@@ -689,10 +692,10 @@ body.mnav-open .mnav { transform: translateY(0); pointer-events: auto; }
         <div class="tag">Rooted in measurement.<br><span style="font-weight:400; font-size:var(--seed-font-size-t3)">© 2026 정지성</span></div>
         <div class="cols">
           <div><a href="/#projects">Projects</a><a href="/insight/">Insight</a><a href="/essay/">Essay</a></div>
-          <div><a href="mailto:escomjung@gmail.com">Contact</a><a href="https://seed-design.io">SEED (구조 참조)</a></div>
+          <div><a href="https://seed-design.io">SEED (구조 참조)</a><a href="https://github.com/marvin-jung">GitHub</a><a href="mailto:escomjung@gmail.com">Contact</a></div>
         </div>
       </div>
-      <div class="finale-big">✳ JISUNG</div>
+      <div class="finale-big"><svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M3.34 7l17.32 10M20.66 7L3.34 17"/></svg> JISUNG</div>
     </div>
   </div>
 </footer>
