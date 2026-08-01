@@ -236,6 +236,15 @@ pre.code-block .s { color: #85b8fd; } /* 문자열 */
 .reveal.in { opacity: 1; transform: translateY(0); }
 body:not(.motion-ready) .reveal { transition: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+/* 튜토리얼 예제: 결과물 데모 박스 + 도식 */
+.demo-box { display:flex; gap:var(--seed-x4); align-items:center; flex-wrap:wrap; margin:var(--seed-x5) 0 var(--seed-x2); }
+.demo-stage { width:200px; aspect-ratio:1/1; background:var(--seed-color-bg-brand-weak); border-radius:var(--seed-radius-r4); overflow:hidden; line-height:0; }
+.demo-btn { border:1px solid var(--seed-color-stroke-neutral-weak); background:var(--seed-color-bg-layer-default); color:var(--seed-color-fg-neutral); padding:var(--seed-x2) var(--seed-x5); border-radius:var(--seed-radius-full); cursor:pointer; font-size:var(--seed-font-size-t3); transition:transform var(--seed-duration-d3); }
+.demo-btn:active { transform:scale(var(--seed-scale-pressed)); }
+.fig { background:var(--seed-color-bg-layer-fill); border:1px solid var(--seed-color-stroke-neutral-muted); border-radius:var(--seed-radius-r4); padding:var(--seed-x5); margin:var(--seed-x5) 0 var(--seed-x2); }
+.fig svg { width:100%; height:auto; display:block; }
+.fig-cap { font-size:var(--seed-font-size-t2); color:var(--seed-color-fg-neutral-subtle); margin-bottom:var(--seed-x6); }
 </style>
 </head>
 <body>
@@ -297,8 +306,42 @@ body:not(.motion-ready) .reveal { transition: none; }
     <h2 id="b6">이징 — 그래프 에디터</h2>
     <p>기본 보간은 리니어라 기계적입니다. keyframe을 선택해 <strong>그래프 에디터</strong>를 열고 커브를 조정하세요: 완만한 S자는 자연스러운 가감속, 목표를 지나쳤다 돌아오는 커브는 오버슈트(탄성), 급격한 커브는 스냅 모션이 됩니다. SEED 같은 시스템이 duration 토큰(d1 50ms~d6 300ms)을 두는 이유가 이 감각의 표준화입니다.</p>
 
+    <div class="fig" aria-label="이징 커브 도식">
+      <svg viewBox="0 0 720 170" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+        <g font-size="12" fill="#868b94">
+          <line x1="40" y1="130" x2="700" y2="130" stroke="#dcdee3"/>
+          <line x1="40" y1="20" x2="40" y2="130" stroke="#dcdee3"/>
+          <line x1="40" y1="50" x2="700" y2="50" stroke="#dcdee3" stroke-dasharray="4 4"/>
+          <text x="46" y="45">목표값 100%</text>
+          <path d="M40 130 C 160 130, 180 20, 300 38 C 360 46, 380 56, 460 50 L 700 50" fill="none" stroke="#f60" stroke-width="3"/>
+          <circle cx="40" cy="130" r="5" fill="#f60"/><circle cx="300" cy="38" r="5" fill="#079171"/><circle cx="460" cy="50" r="5" fill="#f60"/>
+          <text x="300" y="24" text-anchor="middle" fill="#079171" font-weight="bold">오버슈트 (112%)</text>
+          <text x="40" y="150">0f</text><text x="300" y="150" text-anchor="middle">20f</text><text x="460" y="150" text-anchor="middle">35f</text><text x="700" y="150" text-anchor="end">90f</text>
+        </g>
+      </svg>
+    </div>
+    <p class="fig-cap">▲ 그래프 에디터에서 만드는 오버슈트: 목표(100%)를 지나쳤다가(112%) 되돌아오는 커브</p>
+
     <h2 id="b7">고급 도구</h2>
     <p>AE의 주력 기법이 대부분 있습니다: <strong>Trim Path</strong>(패스가 그려지는 효과), <strong>Motion Path</strong>(궤적 따라 이동), <strong>마스크·매트</strong>(가림과 리빌), 블렌드 모드. 텍스트 프롬프트로 초안 레이어·keyframe을 생성해주는 <strong>Motion Copilot</strong>도 있어 시작점으로 쓸 만합니다 — 결과물은 실제 레이어라 수동으로 다듬을 수 있습니다.</p>
+
+    <h2 id="b7x">실습 예제 — 탄성 팝인 배지</h2>
+    <p>이 글의 도구만으로 만드는 미니 프로젝트입니다. 400×400 / 30fps / 3초 캔버스에 원(지름 96px, #FF6600)을 놓고 스케일 keyframe 4개를 찍습니다:</p>
+    <table class="tkn-table">
+      <thead><tr><th>프레임</th><th>스케일</th><th>의도</th></tr></thead>
+      <tbody>
+        <tr><td>0f</td><td>0%</td><td>없음에서 시작</td></tr>
+        <tr><td>20f</td><td>112%</td><td>목표를 지나침 (오버슈트)</td></tr>
+        <tr><td>35f</td><td>100%</td><td>제자리 안착</td></tr>
+        <tr><td>75f → 90f</td><td>100% → 0%</td><td>사라지며 루프 준비 (첫=끝 상태 일치)</td></tr>
+      </tbody>
+    </table>
+    <p>그래프 에디터에서 0→20f 구간을 감속 커브로 다듬으면 아래 결과가 됩니다:</p>
+    <div class="demo-box">
+      <div class="demo-stage" id="crDemo" role="img" aria-label="탄성 팝인 배지 결과물"></div>
+      <button class="demo-btn" id="crDemoBtn">❚❚ 일시정지</button>
+    </div>
+    <p class="fig-cap">▲ 결과물: 위 keyframe 표를 그대로 JSON으로 옮긴 것 (3초 루프)</p>
 
     <h2 id="b8">브랜드 색 입히기</h2>
     <p>내보내기 전에 색을 브랜드 토큰으로 통일하세요. 이 블로그 기준이라면 오렌지 <code class="inline">#FF6600</code>, 그린 <code class="inline">#079171</code>, 뉴트럴 <code class="inline">#1a1c20</code>. 색을 시스템 토큰에서 가져오면 애니메이션이 UI와 한 몸처럼 보입니다.</p>
@@ -329,6 +372,7 @@ body:not(.motion-ready) .reveal { transition: none; }
       <li><a href="#b5">키프레임</a></li>
       <li><a href="#b6">이징</a></li>
       <li><a href="#b7">고급 도구</a></li>
+      <li><a href="#b7x">실습 예제 — 팝인</a></li>
       <li><a href="#b8">브랜드 색</a></li>
       <li><a href="#b9">내보내기</a></li>
     </ul>
@@ -341,7 +385,7 @@ body:not(.motion-ready) .reveal { transition: none; }
 const root = document.documentElement;
 const btn = document.getElementById('themeBtn');
 function applyTheme(t){ root.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
-applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+applyTheme('light'); // 기본 라이트 모드 (토글로 다크 전환 가능)
 function toggleTheme(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
 
 const tocLinks = [...document.querySelectorAll('.toc a')];
@@ -365,6 +409,29 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('motion-ready')));
 }
 
+</script>
+<script src="lottie_light.min.js"></script>
+<script>
+// 결과물 데모: 오버슈트 팝인 (0→112→100→퇴장 루프)
+const crData = { v:"5.7.4", fr:30, ip:0, op:90, w:400, h:400, nm:"pop", ddd:0, assets:[],
+  layers:[{ ddd:0, ind:1, ty:4, nm:"badge", sr:1, ao:0, ip:0, op:90, st:0,
+    ks:{ o:{a:1,k:[{t:0,s:[100],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:70,s:[100],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:88,s:[0],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:90,s:[0]}]},
+      r:{a:0,k:0}, p:{a:0,k:[200,200,0]}, a:{a:0,k:[0,0,0]},
+      s:{a:1,k:[
+        {t:0,s:[0,0,100],o:{x:[.2],y:[.6]},i:{x:[.3],y:[1]}},
+        {t:20,s:[112,112,100],o:{x:[.4],y:[0]},i:{x:[.6],y:[1]}},
+        {t:35,s:[100,100,100]},
+        {t:75,s:[100,100,100],o:{x:[.4],y:[0]},i:{x:[.7],y:[1]}},
+        {t:90,s:[0,0,100]}]} },
+    shapes:[{ty:"gr",it:[
+      {ty:"el",p:{a:0,k:[0,0]},s:{a:0,k:[96,96]}},
+      {ty:"fl",c:{a:0,k:[1,.4,0,1]},o:{a:0,k:100}},
+      {ty:"tr",p:{a:0,k:[0,0]},a:{a:0,k:[0,0]},s:{a:0,k:[100,100]},r:{a:0,k:0},o:{a:0,k:100}}]}] }]};
+const crReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const crAnim = lottie.loadAnimation({container:document.getElementById('crDemo'),renderer:'svg',loop:true,autoplay:!crReduced,animationData:crData});
+const crBtn = document.getElementById('crDemoBtn');
+function crSet(on){ on?crAnim.play():crAnim.pause(); crBtn.textContent = on?'❚❚ 일시정지':'▶ 재생'; }
+crSet(!crReduced); crBtn.addEventListener('click',()=>crSet(crAnim.isPaused));
 </script>
 </body>
 </html>

@@ -236,6 +236,15 @@ pre.code-block .s { color: #85b8fd; } /* 문자열 */
 .reveal.in { opacity: 1; transform: translateY(0); }
 body:not(.motion-ready) .reveal { transition: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+/* 튜토리얼 예제: 결과물 데모 박스 + 도식 */
+.demo-box { display:flex; gap:var(--seed-x4); align-items:center; flex-wrap:wrap; margin:var(--seed-x5) 0 var(--seed-x2); }
+.demo-stage { width:200px; aspect-ratio:1/1; background:var(--seed-color-bg-brand-weak); border-radius:var(--seed-radius-r4); overflow:hidden; line-height:0; }
+.demo-btn { border:1px solid var(--seed-color-stroke-neutral-weak); background:var(--seed-color-bg-layer-default); color:var(--seed-color-fg-neutral); padding:var(--seed-x2) var(--seed-x5); border-radius:var(--seed-radius-full); cursor:pointer; font-size:var(--seed-font-size-t3); transition:transform var(--seed-duration-d3); }
+.demo-btn:active { transform:scale(var(--seed-scale-pressed)); }
+.fig { background:var(--seed-color-bg-layer-fill); border:1px solid var(--seed-color-stroke-neutral-muted); border-radius:var(--seed-radius-r4); padding:var(--seed-x5); margin:var(--seed-x5) 0 var(--seed-x2); }
+.fig svg { width:100%; height:auto; display:block; }
+.fig-cap { font-size:var(--seed-font-size-t2); color:var(--seed-color-fg-neutral-subtle); margin-bottom:var(--seed-x6); }
 </style>
 </head>
 <body>
@@ -389,7 +398,7 @@ body:not(.motion-ready) .reveal { transition: none; }
 const root = document.documentElement;
 const btn = document.getElementById('themeBtn');
 function applyTheme(t){ root.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
-applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+applyTheme('light'); // 기본 라이트 모드 (토글로 다크 전환 가능)
 function toggleTheme(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
 
 const tocLinks = [...document.querySelectorAll('.toc a')];
