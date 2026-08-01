@@ -402,6 +402,34 @@ footer {
 .finale .big .star { display:inline-block; transform-origin:center; }
 .finale:hover .big .star { animation: spinStar 2.5s ease-in-out; }
 @keyframes spinStar { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+
+/* ===== SEED 랜딩 인트로 구조 (실측: 제목 52px/700 좌측 + 설명 16px 우측 + 풀블리드 거대 마크) ===== */
+.intro-band {
+  width: 100vw; margin-left: calc(50% - 50vw);
+  background: #111417; color: #fff;
+  padding: calc(var(--seed-x16) * 1.5) 0 0;
+  overflow: hidden;
+}
+.intro-inner {
+  max-width: 960px; margin: 0 auto; padding: 0 var(--seed-spacing-global-gutter);
+  display: grid; grid-template-columns: minmax(0,1fr) 380px;
+  gap: var(--seed-x10); align-items: start;
+}
+@media (max-width: 860px){ .intro-inner { grid-template-columns: 1fr; } }
+.intro-band h1 {
+  font-size: clamp(34px, 4.2vw, 52px);
+  font-weight: var(--seed-font-weight-bold);
+  line-height: 1.08; letter-spacing: -0.02em; color: #fff;
+}
+.intro-band h1 .accent { color: var(--seed-color-bg-brand-solid); }
+.intro-desc { font-size: 16px; line-height: 24px; color: #b0b3ba; }
+.intro-desc .btn-row { margin-top: var(--seed-x6); }
+/* 거대 마크 — 풀블리드, 좌측 크롭 (SEED 인트로 마크 구조) */
+.intro-mark {
+  width: 100%; height: clamp(300px, 46vw, 620px);
+  margin-top: var(--seed-x10);
+  line-height: 0; pointer-events: none;
+}
 </style>
 </head>
 <body>
@@ -422,19 +450,20 @@ footer {
 
 <main class="container" id="top">
 
-  <section class="hero">
-    <div class="hero-grid">
-      <div>
-        <span class="eyebrow">● Portfolio — 초안</span>
-        <h1>안녕하세요,<br><span class="accent">정지성</span>입니다.</h1>
-        <p>[한 줄 소개를 여기에 — 예: 사용자 경험을 뿌리부터 단단하게 설계하는 ○○ 직군입니다.]</p>
+  <section class="intro-band">
+    <div class="intro-inner">
+      <h1>안녕하세요,<br><span class="accent">정지성</span>입니다.</h1>
+      <div class="intro-desc">
+        [한 줄 소개를 여기에 — 예: 사용자 경험을 뿌리부터<br>
+        단단하게 설계하는 ○○ 직군입니다.<br>
+        추측 대신 실측으로 확인하며 만듭니다.]
         <div class="btn-row">
           <a class="btn btn-brand" href="#projects">프로젝트 보기</a>
-          <a class="btn btn-neutral" href="mailto:escomjung@gmail.com">이메일 보내기</a>
+          <a class="btn btn-neutral" href="mailto:escomjung@gmail.com" style="background:#212429; color:#fff; border-color:#33373e;">이메일 보내기</a>
         </div>
       </div>
-      <div class="hero-anim" id="heroAnim" role="img" aria-label="씨앗을 상징하는 추상 애니메이션"></div>
     </div>
+    <div class="intro-mark" id="heroAnim" role="img" aria-label="회전하는 씨앗 마크 애니메이션"></div>
   </section>
 
   <section id="projects">
@@ -581,55 +610,32 @@ function toggleTheme(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 
 // Lottie 히어로 — 자체 제작 애니메이션 데이터 (씨앗/뿌리 모티프)
 // SEED 방식: SVG 렌더러 + 포스터 배경 + 전역 재생/정지 컨트롤
 // ============================================================
-const seedAnimData = {
-  v: "5.7.4", fr: 30, ip: 0, op: 90, w: 340, h: 340, nm: "seed-pulse", ddd: 0, assets: [],
-  layers: [
-    { // 퍼져나가는 링 (리플)
-      ddd:0, ind:1, ty:4, nm:"ripple", sr:1, ao:0, ip:0, op:90, st:0,
-      ks:{
-        o:{a:1,k:[{t:0,s:[70],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:44,s:[0]},{t:45,s:[70],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:89,s:[0]}]},
-        r:{a:0,k:0}, p:{a:0,k:[170,170,0]}, a:{a:0,k:[0,0,0]},
-        s:{a:1,k:[{t:0,s:[55,55,100],o:{x:[.25],y:[0]},i:{x:[.5],y:[1]}},{t:44,s:[130,130,100]},{t:45,s:[55,55,100],o:{x:[.25],y:[0]},i:{x:[.5],y:[1]}},{t:89,s:[130,130,100]}]}
-      },
-      shapes:[{ty:"gr",it:[
-        {ty:"el",p:{a:0,k:[0,0]},s:{a:0,k:[150,150]}},
-        {ty:"st",c:{a:0,k:[1,.4,0,1]},o:{a:0,k:100},w:{a:0,k:5},lc:2,lj:2},
-        {ty:"tr",p:{a:0,k:[0,0]},a:{a:0,k:[0,0]},s:{a:0,k:[100,100]},r:{a:0,k:0},o:{a:0,k:100}}
-      ]}]
-    },
-    { // 궤도를 도는 작은 점 (green — SEED positive #079171)
-      ddd:0, ind:2, ty:4, nm:"orbit", sr:1, ao:0, ip:0, op:90, st:0,
-      ks:{
-        o:{a:0,k:100},
-        r:{a:1,k:[{t:0,s:[0],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:90,s:[360]}]},
-        p:{a:0,k:[170,170,0]}, a:{a:0,k:[0,0,0]}, s:{a:0,k:[100,100,100]}
-      },
-      shapes:[{ty:"gr",it:[
-        {ty:"el",p:{a:0,k:[104,0]},s:{a:0,k:[22,22]}},
-        {ty:"fl",c:{a:0,k:[.027,.569,.443,1]},o:{a:0,k:100}},
-        {ty:"tr",p:{a:0,k:[0,0]},a:{a:0,k:[0,0]},s:{a:0,k:[100,100]},r:{a:0,k:0},o:{a:0,k:100}}
-      ]}]
-    },
-    { // 중심 씨앗 (carrot #FF6600) — 심장박동 스케일
-      ddd:0, ind:3, ty:4, nm:"seed", sr:1, ao:0, ip:0, op:90, st:0,
-      ks:{
-        o:{a:0,k:100}, r:{a:0,k:0}, p:{a:0,k:[170,170,0]}, a:{a:0,k:[0,0,0]},
-        s:{a:1,k:[{t:0,s:[88,88,100],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:45,s:[106,106,100],o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}},{t:90,s:[88,88,100]}]}
-      },
-      shapes:[{ty:"gr",it:[
-        {ty:"el",p:{a:0,k:[0,0]},s:{a:0,k:[96,96]}},
-        {ty:"fl",c:{a:0,k:[1,.4,0,1]},o:{a:0,k:100}},
-        {ty:"tr",p:{a:0,k:[0,0]},a:{a:0,k:[0,0]},s:{a:0,k:[100,100]},r:{a:0,k:0},o:{a:0,k:100}}
-      ]}]
-    }
-  ]
-};
+const seedAnimData = (() => {
+  // 거대 마크: 8갈래 애스터리스크 — 45도 대칭이라 0→45도 회전이 이음새 없는 루프
+  // 규칙: 마지막이 아닌 keyframe에는 easing 필수 (lottie_light 렌더 깨짐 방지)
+  const EZ = {o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}};
+  const spokes = [0, 45, 90, 135].map((deg, i) => ({
+    ty: "gr", it: [
+      { ty: "rc", p: {a:0,k:[0,0]}, s: {a:0,k:[560,96]}, r: {a:0,k:48} },
+      { ty: "fl", c: {a:0,k:[1,.4,0,1]}, o: {a:0,k:100} },
+      { ty: "tr", p: {a:0,k:[0,0]}, a: {a:0,k:[0,0]}, s: {a:0,k:[100,100]}, r: {a:0,k:deg}, o: {a:0,k:100} }
+    ]
+  }));
+  return { v:"5.7.4", fr:30, ip:0, op:240, w:1600, h:760, nm:"mark", ddd:0, assets:[],
+    layers:[{ ddd:0, ind:1, ty:4, nm:"asterisk", sr:1, ao:0, ip:0, op:240, st:0,
+      ks:{ o:{a:0,k:100},
+        r:{a:1,k:[{t:0,s:[0],...EZ},{t:240,s:[45]}]},
+        p:{a:0,k:[420,400,0]}, a:{a:0,k:[0,0,0]},
+        s:{a:1,k:[{t:0,s:[100,100,100],...EZ},{t:120,s:[104,104,100],...EZ},{t:240,s:[100,100,100]}]} },
+      shapes: spokes }] };
+})();
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const heroAnim = lottie.loadAnimation({
   container: document.getElementById('heroAnim'),
   renderer: 'svg', loop: true, autoplay: !reduced,
-  animationData: seedAnimData
+  animationData: seedAnimData,
+  rendererSettings: { preserveAspectRatio: 'xMinYMid slice' }
 });
 
 // SEED식 전역 재생/일시정지 컨트롤
