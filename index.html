@@ -570,10 +570,11 @@ body.landing .nav .logo { font-size: 16px; }
 .essay-grid .essay-card.reveal.in { transform: translateY(0); }
 
 /* ===== 더보기 버튼: 색 순환 + 팝 스케일 등장/퇴장 ===== */
-@keyframes moreCycle { 0%{background:#f60} 25%{background:#00a05e} 50%{background:#217cf9} 75%{background:#e14d00} 100%{background:#f60} }
+/* SEED 방식(코드 확인: data-cursor="text" 커스텀 커서): 커서를 대신하는 '더보기' 필.
+   mix-blend-mode: difference — 배경(카드 색)에 따라 필 색이 계속 달라진다 */
 .marquee-more {
-  background:#f60; color:#fff; opacity:1;
-  animation: moreCycle 3.2s linear infinite;
+  background:#fff; color:#000; opacity:1;
+  mix-blend-mode: difference;
   transform: translate(-50%,-50%) scale(0);
   transition: transform .38s cubic-bezier(.34,1.56,.64,1);
   box-shadow: none; pointer-events: none;
@@ -588,9 +589,8 @@ body.landing .nav .logo { font-size: 16px; }
     <a class="logo" href="#top"><span class="logo-dot"></span>정지성</a>
     <ul>
       <li><a href="#projects">Projects</a></li>
-      <li><a href="#insights">Insights</a></li>
-      <li><a href="#essay">Essay</a></li>
       <li><a href="insight.html">Insight</a></li>
+      <li><a href="essay.html">Essay</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환" id="themeBtn">☾</button></li>
     </ul>
@@ -897,10 +897,10 @@ if (!motionReduced) {
     el.innerHTML = parts.map((p,i) => '<span class="tr-mask"><span class="tr-line" style="--tr-delay:'+(i*0.12)+'s">'+p+'</span></span>').join('');
     el.classList.add('reveal-title');
   };
-  document.querySelectorAll('.section-title, .principle-card h3, .essay-grid .essay-card h3').forEach(wrapLines);
+  document.querySelectorAll('.section-title, .section-sub, .principle-card h3, .essay-grid .essay-card h3').forEach(wrapLines);
   const io2 = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting || e.boundingClientRect.bottom < 0) { e.target.classList.add('in'); io2.unobserve(e.target); }
-  }), { threshold: 0.2 });
+  }), { threshold: 0, rootMargin: '0px 0px -12% 0px' });
   document.querySelectorAll('.reveal-title').forEach(el => io2.observe(el));
   addEventListener('scroll', () => document.querySelectorAll('.reveal-title:not(.in)').forEach(el => {
     if (el.getBoundingClientRect().top < innerHeight*0.92) el.classList.add('in');
@@ -941,7 +941,7 @@ if (track && !motionReduced) {
 // ============================================================
 if (!reduced) {
   const targets = document.querySelectorAll(
-    '.section-title, .section-sub, .principle-card, .ins-card, .ins-more, .essay-card, .contact-box, .statement, .mosaic > div'
+    '.principle-card, .ins-card, .ins-more, .essay-card, .contact-box, .statement, .mosaic > div'
   );
   targets.forEach((el, i) => {
     el.classList.add('reveal');
