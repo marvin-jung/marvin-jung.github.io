@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — 정지성</title>
+<style>
+/* ============================================================
+   Design Tokens — seed-design.io 실측값 기반 (index.html과 동일)
+   ============================================================ */
+:root {
+  --seed-color-bg-brand-solid: #f60;
+  --seed-color-bg-brand-solid-pressed: #e14d00;
+  --seed-color-bg-brand-weak: #fff2ec;
+  --seed-color-bg-brand-weak-pressed: #ffe8db;
+  --seed-color-bg-layer-default: #fff;
+  --seed-color-bg-layer-fill: #f7f8f9;
+  --seed-color-bg-layer-basement: #f3f4f5;
+  --seed-color-banner-yellow: #fffae1;
+  --seed-color-fg-neutral: #1a1c20;
+  --seed-color-fg-neutral-muted: #555d6d;
+  --seed-color-fg-neutral-subtle: #868b94;
+  --seed-color-fg-brand: #f60;
+  --seed-color-fg-brand-contrast: #e14d00;
+  --seed-color-stroke-neutral-weak: #dcdee3;
+  --seed-color-stroke-neutral-muted: #00000010;
+  --seed-color-stroke-focus-ring: #5e98fe;
+  --seed-color-palette-carrot-300: #ffd5c0;
+  --seed-color-palette-carrot-500: #ff9364;
+
+  --fs-min: .8; --fs-mul: 1; --fs-max: 1.5;
+  --seed-font-size-t2:  clamp(calc(12px * var(--fs-min)), calc(.75rem   * var(--fs-mul)), calc(12px * var(--fs-max)));
+  --seed-font-size-t3:  clamp(calc(13px * var(--fs-min)), calc(.8125rem * var(--fs-mul)), calc(13px * var(--fs-max)));
+  --seed-font-size-t4:  clamp(calc(14px * var(--fs-min)), calc(.875rem  * var(--fs-mul)), calc(14px * var(--fs-max)));
+  --seed-font-size-t5:  clamp(calc(16px * var(--fs-min)), calc(1rem     * var(--fs-mul)), calc(16px * var(--fs-max)));
+  --seed-font-size-t6:  clamp(calc(18px * var(--fs-min)), calc(1.125rem * var(--fs-mul)), calc(18px * var(--fs-max)));
+  --seed-font-size-t8:  clamp(calc(22px * var(--fs-min)), calc(1.375rem * var(--fs-mul)), calc(22px * var(--fs-max)));
+  --seed-font-size-t13: clamp(calc(40px * var(--fs-min)), calc(2.5rem   * var(--fs-mul)), calc(40px * var(--fs-max)));
+  --seed-font-weight-regular: 400;
+  --seed-font-weight-medium: 500;
+  --seed-font-weight-bold: 700;
+
+  --seed-x1: 4px; --seed-x2: 8px; --seed-x3: 12px; --seed-x4: 16px;
+  --seed-x5: 20px; --seed-x6: 24px; --seed-x8: 32px; --seed-x10: 40px;
+  --seed-x14: 56px; --seed-x16: 64px;
+  --seed-radius-r2: 8px; --seed-radius-r3: 12px; --seed-radius-r4: 16px;
+  --seed-radius-full: 9999px;
+  --seed-shadow-s1: 0px 1px 4px 0px #00000014;
+  --seed-duration-d3: .15s;
+  --seed-duration-d6: .3s;
+  --seed-scale-pressed: .97;
+}
+[data-theme="dark"] {
+  --seed-color-bg-layer-default: #1a1c20;
+  --seed-color-bg-layer-fill: #212429;
+  --seed-color-bg-layer-basement: #17191c;
+  --seed-color-bg-brand-weak: #3a2115;
+  --seed-color-bg-brand-weak-pressed: #47270f;
+  --seed-color-banner-yellow: #332e15;
+  --seed-color-fg-neutral: #f3f4f5;
+  --seed-color-fg-neutral-muted: #b0b3ba;
+  --seed-color-fg-neutral-subtle: #868b94;
+  --seed-color-fg-brand: #ff9364;
+  --seed-color-stroke-neutral-weak: #33373e;
+  --seed-color-stroke-neutral-muted: #ffffff14;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  background: var(--seed-color-bg-layer-default);
+  color: var(--seed-color-fg-neutral);
+  font-size: var(--seed-font-size-t5);
+  line-height: 1.7;
+  transition: background var(--seed-duration-d6), color var(--seed-duration-d6);
+}
+::selection { background: var(--seed-color-palette-carrot-300); color: #1a1c20; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--seed-color-stroke-focus-ring); outline-offset: 2px; border-radius: var(--seed-radius-r2); }
+
+/* ---- Top Navigation ---- */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: color-mix(in srgb, var(--seed-color-bg-layer-default) 82%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--seed-color-stroke-neutral-muted);
+}
+.nav {
+  max-width: 1280px; margin: 0 auto; padding: 0 var(--seed-x4);
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--seed-x14);
+}
+.nav .logo { font-weight: var(--seed-font-weight-bold); font-size: var(--seed-font-size-t6); display: flex; align-items: center; gap: var(--seed-x2); }
+.logo-dot { width: 10px; height: 10px; border-radius: var(--seed-radius-full); background: var(--seed-color-bg-brand-solid); display: inline-block; }
+.nav ul { display: flex; gap: var(--seed-x6); list-style: none; align-items: center; }
+.nav ul a {
+  font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-muted);
+  font-weight: var(--seed-font-weight-medium); transition: color var(--seed-duration-d3);
+}
+.nav ul a:hover, .nav ul a.active { color: var(--seed-color-fg-neutral); }
+.theme-toggle {
+  border: 1px solid var(--seed-color-stroke-neutral-weak);
+  background: var(--seed-color-bg-layer-default); color: var(--seed-color-fg-neutral);
+  width: 36px; height: 36px; border-radius: var(--seed-radius-full);
+  cursor: pointer; font-size: 15px; line-height: 1;
+  transition: transform var(--seed-duration-d3);
+}
+.theme-toggle:active { transform: scale(var(--seed-scale-pressed)); }
+
+/* ---- 3-column doc layout (seed-design.io 문서 구조 참조) ---- */
+.doc-layout {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 220px minmax(0, 1fr) 200px;
+  gap: var(--seed-x10);
+  padding: var(--seed-x8) var(--seed-x4) var(--seed-x16);
+}
+@media (max-width: 1080px){ .doc-layout { grid-template-columns: 220px minmax(0,1fr); } .toc { display:none; } }
+@media (max-width: 780px){ .doc-layout { grid-template-columns: 1fr; } }
+
+/* ---- Left sidebar: 글 목록 ---- */
+.sidebar {
+  position: sticky; top: calc(var(--seed-x14) + var(--seed-x6));
+  align-self: start; max-height: calc(100vh - 120px); overflow-y: auto;
+}
+.sidebar .group-label {
+  font-size: var(--seed-font-size-t2); font-weight: var(--seed-font-weight-bold);
+  color: var(--seed-color-fg-neutral-subtle);
+  text-transform: uppercase; letter-spacing: .06em;
+  padding: 0 var(--seed-x3); margin-bottom: var(--seed-x2);
+}
+.sidebar nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: var(--seed-x6); }
+.sidebar nav a {
+  font-size: var(--seed-font-size-t3);
+  color: var(--seed-color-fg-neutral-muted);
+  padding: var(--seed-x2) var(--seed-x3);
+  border-radius: var(--seed-radius-r2);
+  transition: background var(--seed-duration-d3), color var(--seed-duration-d3);
+}
+.sidebar nav a:hover { background: var(--seed-color-bg-layer-fill); color: var(--seed-color-fg-neutral); }
+.sidebar nav a.current {
+  background: var(--seed-color-bg-layer-fill);
+  color: var(--seed-color-fg-neutral);
+  font-weight: var(--seed-font-weight-medium);
+}
+
+/* ---- Article ---- */
+.breadcrumb { font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-subtle); margin-bottom: var(--seed-x4); }
+.breadcrumb a:hover { color: var(--seed-color-fg-neutral); }
+article h1 {
+  font-size: var(--seed-font-size-t13);
+  font-weight: var(--seed-font-weight-bold);
+  letter-spacing: -0.02em; line-height: 1.2;
+  margin-bottom: var(--seed-x3);
+}
+.article-desc { font-size: var(--seed-font-size-t6); color: var(--seed-color-fg-neutral-muted); margin-bottom: var(--seed-x6); }
+.article-meta {
+  display: flex; gap: var(--seed-x3); align-items: center; flex-wrap: wrap;
+  font-size: var(--seed-font-size-t3); color: var(--seed-color-fg-neutral-subtle);
+  margin-bottom: var(--seed-x6);
+}
+.meta-chip {
+  background: var(--seed-color-bg-brand-weak); color: var(--seed-color-fg-brand-contrast);
+  font-weight: var(--seed-font-weight-medium);
+  padding: 2px var(--seed-x3); border-radius: var(--seed-radius-full);
+  font-size: var(--seed-font-size-t2);
+}
+.hero-banner {
+  background: var(--seed-color-banner-yellow);
+  border-radius: var(--seed-radius-r4);
+  padding: var(--seed-x10) var(--seed-x8);
+  display: flex; flex-direction: column; gap: var(--seed-x3);
+  overflow: hidden; margin-bottom: var(--seed-x8);
+}
+.hero-banner code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--seed-font-size-t8);
+  font-weight: var(--seed-font-weight-bold);
+  color: var(--seed-color-fg-brand);
+  white-space: nowrap;
+}
+.hero-banner code:nth-child(2) { color: var(--seed-color-fg-brand-contrast); }
+.hero-banner code:nth-child(3) { color: var(--seed-color-palette-carrot-500); }
+
+article h2 {
+  font-size: var(--seed-font-size-t8);
+  font-weight: var(--seed-font-weight-bold);
+  letter-spacing: -0.01em;
+  margin: var(--seed-x10) 0 var(--seed-x4);
+  scroll-margin-top: calc(var(--seed-x14) + var(--seed-x4));
+}
+article p { color: var(--seed-color-fg-neutral-muted); margin-bottom: var(--seed-x4); }
+article strong { color: var(--seed-color-fg-neutral); }
+article code.inline {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--seed-color-bg-layer-fill);
+  border: 1px solid var(--seed-color-stroke-neutral-muted);
+  padding: 1px var(--seed-x2);
+  border-radius: var(--seed-radius-r2);
+  color: var(--seed-color-fg-neutral);
+}
+
+/* 토큰 다이어그램 카드 (참조 페이지의 Semantic→Scale→Raw 구조) */
+.token-diagram {
+  background: var(--seed-color-bg-layer-fill);
+  border: 1px solid var(--seed-color-stroke-neutral-muted);
+  border-radius: var(--seed-radius-r4);
+  padding: var(--seed-x6);
+  margin: var(--seed-x6) 0;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--seed-x4);
+  font-size: var(--seed-font-size-t3);
+}
+@media (max-width: 640px){ .token-diagram { grid-template-columns: 1fr; } }
+.token-col { display: flex; flex-direction: column; gap: var(--seed-x3); }
+.token-col .col-label { font-weight: var(--seed-font-weight-bold); font-size: var(--seed-font-size-t2); color: var(--seed-color-fg-neutral-subtle); text-transform: uppercase; letter-spacing: .05em; }
+.token-pill {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--seed-color-bg-layer-default);
+  border: 1px solid var(--seed-color-stroke-neutral-weak);
+  border-radius: var(--seed-radius-r3);
+  padding: var(--seed-x2) var(--seed-x3);
+  display: inline-flex; align-items: center; gap: var(--seed-x2);
+  box-shadow: var(--seed-shadow-s1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.swatch { width: 12px; height: 12px; border-radius: var(--seed-radius-full); background: var(--seed-color-bg-brand-solid); flex-shrink: 0; }
+
+/* prev/next */
+.doc-footer {
+  display: flex; justify-content: space-between; gap: var(--seed-x4);
+  margin-top: var(--seed-x16); padding-top: var(--seed-x6);
+  border-top: 1px solid var(--seed-color-stroke-neutral-muted);
+}
+.doc-footer a {
+  flex: 1; max-width: 48%;
+  border: 1px solid var(--seed-color-stroke-neutral-weak);
+  border-radius: var(--seed-radius-r3);
+  padding: var(--seed-x4) var(--seed-x5);
+  transition: background var(--seed-duration-d3);
+}
+.doc-footer a:hover { background: var(--seed-color-bg-layer-fill); }
+.doc-footer .dir { font-size: var(--seed-font-size-t2); color: var(--seed-color-fg-neutral-subtle); display: block; }
+.doc-footer .title { font-size: var(--seed-font-size-t4); font-weight: var(--seed-font-weight-medium); }
+.doc-footer a.next { text-align: right; margin-left: auto; }
+.last-updated { font-size: var(--seed-font-size-t2); color: var(--seed-color-fg-neutral-subtle); margin-top: var(--seed-x6); }
+
+/* 모바일: 사이드바를 일반 흐름으로 (sticky 해제) — 기본 규칙보다 뒤에 선언해야 적용됨 */
+@media (max-width: 780px){
+  .sidebar {
+    position: static; max-height: none;
+    border-bottom: 1px solid var(--seed-color-stroke-neutral-muted);
+    padding-bottom: var(--seed-x4); margin-bottom: var(--seed-x2);
+  }
+}
+
+/* ---- Right TOC ---- */
+.toc {
+  position: sticky; top: calc(var(--seed-x14) + var(--seed-x6));
+  align-self: start; font-size: var(--seed-font-size-t2);
+}
+.toc .toc-label { color: var(--seed-color-fg-neutral-subtle); font-weight: var(--seed-font-weight-medium); margin-bottom: var(--seed-x3); }
+.toc ul { list-style: none; border-left: 1px solid var(--seed-color-stroke-neutral-weak); }
+.toc li a {
+  display: block; color: var(--seed-color-fg-neutral-subtle);
+  padding: var(--seed-x1) 0 var(--seed-x1) var(--seed-x3);
+  border-left: 2px solid transparent; margin-left: -1.5px;
+  transition: color var(--seed-duration-d3), border-color var(--seed-duration-d3);
+}
+.toc li a:hover { color: var(--seed-color-fg-neutral); }
+.toc li a.active { color: var(--seed-color-fg-neutral); border-left-color: var(--seed-color-fg-neutral); font-weight: var(--seed-font-weight-medium); }
+
+/* ---- 스크롤 등장 효과 — SEED 실측값(.5s / translateY(1rem)) ---- */
+.reveal {
+  opacity: 0; transform: translateY(1rem);
+  transition: opacity .5s ease, transform .5s ease;
+  transition-delay: var(--reveal-delay, 0s);
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+body:not(.motion-ready) .reveal { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><span class="logo-dot"></span>정지성</a>
+    <ul>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환" id="themeBtn">☾</button></li>
+    </ul>
+  </div>
+</header>
+
+<div class="doc-layout">
+
+  <!-- 좌측: 글 목록 -->
+  <aside class="sidebar">
+    <div class="group-label">Analysis</div>
+    <nav>
+      <a href="#" class="current">SEED 디자인 시스템 분석</a>
+      <a href="#">[다음 글 제목]</a>
+    </nav>
+    <div class="group-label">Notes</div>
+    <nav>
+      <a href="#">[작성 예정 글]</a>
+      <a href="#">[작성 예정 글]</a>
+    </nav>
+  </aside>
+
+  <!-- 중앙: 본문 -->
+  <article>
+    <div class="breadcrumb"><a href="blog.html">Blog</a> / Analysis</div>
+    <h1>SEED 디자인 시스템 분석</h1>
+    <p class="article-desc">당근 SEED의 토큰 아키텍처를 브라우저에서 실측한 564개 CSS 변수로 살펴봅니다.</p>
+    <div class="article-meta">
+      <span class="meta-chip">Design System</span>
+      <span class="meta-chip">Analysis</span>
+      <span>2026. 8. 1.</span>
+      <span>·</span>
+      <span>5분 읽기</span>
+    </div>
+
+    <div class="hero-banner" aria-hidden="true">
+      <code>$dimension.x4</code>
+      <code>$color.fg.brand</code>
+      <code>$spacing-x.global-gutter</code>
+    </div>
+
+    <h2 id="sec1">왜 토큰인가</h2>
+    <p>디자인 토큰은 디자인 결정을 사람과 기계가 모두 이해할 수 있는 방식으로 인코딩하는 방법입니다. SEED는 이를 <strong>"값이 아니라 의미로 관리한다"</strong>는 원칙으로 구현합니다. 같은 <code class="inline">#f60</code>이라도 브랜드 배경(<code class="inline">bg.brand.solid</code>)과 브랜드 텍스트(<code class="inline">fg.brand</code>)는 별도 토큰입니다. 의미가 다르면 따로 업데이트할 수 있어야 하기 때문입니다.</p>
+
+    <h2 id="sec2">2계층 구조</h2>
+    <p>SEED 토큰은 <strong>Scale Token</strong>(raw 값에 이름 부여)과 <strong>Semantic Token</strong>(Scale을 조합해 의도 표현)의 2단계로 계층화되어 있습니다. 실측 결과 웹 런타임에는 총 564개의 <code class="inline">--seed-*</code> 변수가 노출됩니다.</p>
+
+    <div class="token-diagram">
+      <div class="token-col">
+        <span class="col-label">Semantic Token</span>
+        <span class="token-pill">$spacing-x.between-chips</span>
+        <span class="token-pill"><span class="swatch"></span>$color.fg.brand</span>
+        <span class="token-pill">$spacing-x.global-gutter</span>
+      </div>
+      <div class="token-col">
+        <span class="col-label">Scale Token</span>
+        <span class="token-pill">$dimension.x2</span>
+        <span class="token-pill"><span class="swatch"></span>$color.palette.carrot-600</span>
+        <span class="token-pill">$dimension.x4</span>
+      </div>
+      <div class="token-col">
+        <span class="col-label">Raw Values</span>
+        <span class="token-pill">8px</span>
+        <span class="token-pill"><span class="swatch"></span>#FF6600</span>
+        <span class="token-pill">16px</span>
+      </div>
+    </div>
+
+    <h2 id="sec3">역할 기반 색상</h2>
+    <p>색상은 <code class="inline">bg</code>(43개) / <code class="inline">fg</code>(16개) / <code class="inline">stroke</code>(16개)의 세 역할과, 예외 상황을 위한 팔레트 색상(94개, 각 색 100~1000 스케일)으로 구성됩니다. 모든 역할 기반 색상은 WCAG가 아닌 <strong>APCA</strong> 명도 대비 기준을 충족하도록 설계된 점이 차별점입니다.</p>
+
+    <h2 id="sec4">유동 타이포그래피</h2>
+    <p>14단계 스케일(t1~t14)의 각 사이즈는 고정값이 아니라 <code class="inline">clamp(11px×0.8, 0.6875rem, 11px×1.5)</code> 같은 유동형입니다. 사용자의 폰트 배율 설정에 0.8~1.5배 범위로 반응하며, 고정이 필요하면 <code class="inline">-static</code> 변형을 씁니다. 접근성이 스케일 설계 단계부터 들어가 있는 셈입니다.</p>
+
+    <h2 id="sec5">배운 점</h2>
+    <p>이 포트폴리오 사이트 자체가 SEED에서 실측한 토큰으로 만들어졌습니다. 범용 시스템 위에 서비스 고유 토큰(매너온도 등)을 얹는 확장 패턴, pressed 상태까지 토큰화하는 꼼꼼함, 모션 duration 6단계 등 작은 결정들이 쌓여 일관성을 만든다는 것을 확인했습니다.</p>
+
+    <div class="doc-footer">
+      <a href="#" class="prev"><span class="dir">이전 글</span><span class="title">[이전 글 제목]</span></a>
+      <a href="#" class="next"><span class="dir">다음 글</span><span class="title">[다음 글 제목]</span></a>
+    </div>
+    <p class="last-updated">Last updated on 2026. 8. 1.</p>
+  </article>
+
+  <!-- 우측: On this page -->
+  <nav class="toc" aria-label="목차">
+    <div class="toc-label">On this page</div>
+    <ul>
+      <li><a href="#sec1">왜 토큰인가</a></li>
+      <li><a href="#sec2">2계층 구조</a></li>
+      <li><a href="#sec3">역할 기반 색상</a></li>
+      <li><a href="#sec4">유동 타이포그래피</a></li>
+      <li><a href="#sec5">배운 점</a></li>
+    </ul>
+  </nav>
+
+</div>
+
+<script>
+// 테마 전환 (index.html과 동일 — 인메모리)
+const root = document.documentElement;
+const btn = document.getElementById('themeBtn');
+function applyTheme(t){ root.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? '☀' : '☾'; }
+applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+function toggleTheme(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+
+// TOC 스크롤스파이 — 참조 사이트의 active 인디케이터 재현
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href')));
+const spy = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => s && spy.observe(s));
+
+// 스크롤 등장 효과 (본문 h2 섹션 + 다이어그램 카드)
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const targets = document.querySelectorAll('article h2, article p, .token-diagram, .hero-banner, .doc-footer');
+  targets.forEach((el, i) => { el.classList.add('reveal'); el.style.setProperty('--reveal-delay', (i % 3) * 0.06 + 's'); });
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting || e.boundingClientRect.bottom < 0) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  targets.forEach(el => io.observe(el));
+  const sweep = () => targets.forEach(el => {
+    if (!el.classList.contains('in') && el.getBoundingClientRect().top < innerHeight) el.classList.add('in');
+  });
+  addEventListener('scroll', sweep, { passive: true });
+  requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('motion-ready')));
+}
+</script>
+</body>
+</html>
