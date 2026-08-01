@@ -521,6 +521,31 @@ body.motion-off * { animation-play-state: paused !important; }
 }
 .marquee-viewport:hover .marquee-more { opacity: 1; transform: translate(-50%,-50%) scale(1); pointer-events: auto; }
 @media (prefers-reduced-motion: reduce){ .marquee-viewport { overflow-x: auto; } }
+
+/* h1 줄 리빌 (인트로 제목) */
+.intro-band h1 .mask { display:block; overflow:hidden; }
+.intro-band h1 .line { display:block; transform:translateY(110%); will-change:transform; }
+@media (prefers-reduced-motion: reduce){ .intro-band h1 .line { transform:none; } }
+
+/* 반응형 보정 — SEED 모바일 실측: 섹션 제목 28px */
+body.landing .section-title { font-size: clamp(28px, 3.6vw, 52px); margin-bottom: var(--seed-x4); }
+body.landing .sec-head { margin-bottom: var(--seed-x8); }
+body.landing .principle-sticky { padding-bottom: var(--seed-x6); }
+@media (max-width: 860px){
+  body.landing section { padding: var(--seed-x16) 0; }
+  body.landing .principle-grid { gap: var(--seed-x8); }
+  body.landing .sec-head { flex-direction: column; align-items: flex-start; gap: var(--seed-x2); margin-bottom: var(--seed-x6); }
+  .act1 .statement { font-size: clamp(24px, 6vw, 34px); }
+  .finale-big { font-size: clamp(64px, 20vw, 120px); }
+}
+
+/* 커서 추적형 더보기 버튼 (SEED 동적 버튼) */
+.marquee-more { left: 0; top: 0; transform: translate(-50%,-50%) scale(.6); transition: opacity var(--seed-duration-d3); will-change: left, top; }
+.marquee-viewport:hover .marquee-more { transform: translate(-50%,-50%) scale(1); }
+
+/* 에세이 순차 등장: 왼→오, 아래→위 */
+.essay-card.reveal { transform: translateY(44px); transition-duration: .6s; }
+.essay-card.reveal.in { transform: translateY(0); }
 </style>
 </head>
 <body class="landing">
@@ -532,7 +557,7 @@ body.motion-off * { animation-play-state: paused !important; }
       <li><a href="#projects">Projects</a></li>
       <li><a href="#insights">Insights</a></li>
       <li><a href="#essay">Essay</a></li>
-      <li><a href="blog.html">Blog</a></li>
+      <li><a href="insight.html">Insight</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환" id="themeBtn">☾</button></li>
     </ul>
@@ -551,7 +576,7 @@ body.motion-off * { animation-play-state: paused !important; }
 
   <section class="intro-band">
     <div class="intro-inner">
-      <h1>안녕하세요,<br><span class="accent">정지성</span>입니다.</h1>
+      <h1 id="introTitle"><span class="mask"><span class="line">안녕하세요,</span></span><span class="mask"><span class="line"><span class="accent">정지성</span>입니다.</span></span></h1>
       <div class="intro-desc">
         <div class="lines" id="introLines">
           <span class="mask"><span class="line">[한 줄 소개 — 사용자 경험을 뿌리부터</span></span>
@@ -614,11 +639,11 @@ body.motion-off * { animation-play-state: paused !important; }
         <h2 class="section-title">인사이트</h2>
         <p class="section-sub" style="margin-bottom:0">직접 실측하고 검증하며 쓴 분석과 튜토리얼</p>
       </div>
-      <a class="more-link" href="blog.html">더보기 →</a>
+      <a class="more-link" href="insight.html">더보기 →</a>
     </div>
     <div class="marquee-viewport" id="marqueeVp">
       <div class="marquee-track" id="marqueeTrack">
-      <a class="ins-card" href="blog.html">
+      <a class="ins-card" href="blog-seed-analysis.html">
         <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><rect x="40" y="52" width="150" height="28" rx="14" fill="#f60"/><rect x="40" y="92" width="220" height="28" rx="14" fill="#ffd5c0"/><rect x="40" y="132" width="110" height="28" rx="14" fill="#1a1c20"/></svg></div>
         <div class="label">SEED 디자인 시스템 분석</div><div class="cat">Analysis</div>
       </a>
@@ -642,9 +667,9 @@ body.motion-off * { animation-play-state: paused !important; }
         <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#d6f5a2"/><rect x="30" y="50" width="70" height="100" rx="8" fill="#fff"/><rect x="125" y="50" width="70" height="100" rx="8" fill="#fff"/><rect x="220" y="50" width="70" height="100" rx="8" fill="#fff"/><circle cx="65" cy="100" r="14" fill="#f60"/><circle cx="160" cy="100" r="20" fill="#ff9364"/><circle cx="255" cy="100" r="14" fill="#00a05e"/></svg></div>
         <div class="label">③ 피그마: Figma to Lottie</div><div class="cat">Tutorial</div>
       </a>
-      <a class="ins-more" href="blog.html">전체 글 보기 →</a>
+      <a class="ins-more" href="insight.html">전체 글 보기 →</a>
     
-      <a class="ins-card" href="blog.html">
+      <a class="ins-card" href="blog-seed-analysis.html">
         <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#fff2ec"/><rect x="40" y="52" width="150" height="28" rx="14" fill="#f60"/><rect x="40" y="92" width="220" height="28" rx="14" fill="#ffd5c0"/><rect x="40" y="132" width="110" height="28" rx="14" fill="#1a1c20"/></svg></div>
         <div class="label">SEED 디자인 시스템 분석</div><div class="cat">Analysis</div>
       </a>
@@ -668,9 +693,9 @@ body.motion-off * { animation-play-state: paused !important; }
         <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#d6f5a2"/><rect x="30" y="50" width="70" height="100" rx="8" fill="#fff"/><rect x="125" y="50" width="70" height="100" rx="8" fill="#fff"/><rect x="220" y="50" width="70" height="100" rx="8" fill="#fff"/><circle cx="65" cy="100" r="14" fill="#f60"/><circle cx="160" cy="100" r="20" fill="#ff9364"/><circle cx="255" cy="100" r="14" fill="#00a05e"/></svg></div>
         <div class="label">③ 피그마: Figma to Lottie</div><div class="cat">Tutorial</div>
       </a>
-      <a class="ins-more" href="blog.html">전체 글 보기 →</a>
+      <a class="ins-more" href="insight.html">전체 글 보기 →</a>
     </div>
-      <a class="marquee-more" href="blog.html">더보기 →</a>
+      <a class="marquee-more" href="insight.html">더보기 →</a>
     </div>
   </section>
 
@@ -680,7 +705,7 @@ body.motion-off * { animation-play-state: paused !important; }
         <h2 class="section-title">에세이</h2>
         <p class="section-sub" style="margin-bottom:0">만들며 생각한 것들</p>
       </div>
-      <a class="more-link" href="blog-essay-measure.html">더보기 →</a>
+      <a class="more-link" href="essay.html">더보기 →</a>
     </div>
     <div class="essay-grid">
       <a class="essay-card" href="blog-essay-measure.html">
@@ -693,7 +718,7 @@ body.motion-off * { animation-play-state: paused !important; }
         <h3>훔치지 않고 배우기</h3>
         <p>구조는 배우고, 얼굴은 만들지 않는다</p>
       </a>
-      <a class="essay-card" href="blog.html">
+      <a class="essay-card" href="essay.html">
         <div class="thumb"><svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg"><rect width="320" height="200" fill="#d6f5a2"/><rect x="70" y="45" width="180" height="14" rx="7" fill="#1a1c20"/><rect x="70" y="75" width="140" height="14" rx="7" fill="#1a1c20" opacity=".7"/><rect x="70" y="105" width="160" height="14" rx="7" fill="#1a1c20" opacity=".45"/><rect x="70" y="135" width="90" height="14" rx="7" fill="#f60"/></svg></div>
         <h3>다음 글을 준비 중입니다</h3>
         <p>전체 글 목록 보기 →</p>
@@ -721,7 +746,7 @@ body.motion-off * { animation-play-state: paused !important; }
             <a href="#projects">Projects</a><a href="#insights">Insights</a><a href="#essay">Essay</a>
           </div>
           <div>
-            <a href="blog.html">Blog</a><a href="blog-essay-measure.html">Essay 전문</a><a href="mailto:escomjung@gmail.com">Contact</a>
+            <a href="insight.html">Insight</a><a href="essay.html">Essay</a><a href="mailto:escomjung@gmail.com">Contact</a>
           </div>
           <div>
             <a href="https://seed-design.io">SEED (구조 참조)</a><a href="https://github.com/marvin-jung">GitHub</a>
@@ -796,13 +821,13 @@ motionBtn.addEventListener('click', () => setMotion(!motionPlaying));
 const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // (B) 인트로 설명 줄 리빌 — 스크롤 진행률에 줄 단위 매핑 (역스크롤 시 되감김)
-const introLines = [...document.querySelectorAll('#introLines .line')];
+const introLines = [...document.querySelectorAll('#introTitle .line'), ...document.querySelectorAll('#introLines .line')];
 function lineReveal(){
   if (motionReduced || !introLines.length) return;
   const band = document.querySelector('.intro-band');
   const r = band.getBoundingClientRect();
   // 밴드 상단이 화면 70% 지점 지날 때 시작 → 30% 지점까지 진행
-  const p = Math.min(1, Math.max(0, (innerHeight*0.7 - r.top) / (innerHeight*0.55)));
+  const p = Math.min(1, Math.max(0, (innerHeight*0.75 - r.top) / (innerHeight*0.6)));
   introLines.forEach((el, i) => {
     const lp = Math.min(1, Math.max(0, p*introLines.length - i)); // 줄별 0..1
     el.style.transform = 'translateY(' + (110*(1-lp)) + '%)';
@@ -833,18 +858,26 @@ lineReveal(); scrubArts();
 const track = document.getElementById('marqueeTrack');
 const vp = document.getElementById('marqueeVp');
 if (track && !motionReduced) {
-  let x = 0, v = 40, target = 40, last = performance.now(), half = 0;
+  let x = 0, v = 90, target = 90, last = performance.now(), half = 0;
+  let mx = 0, my = 0, bx = 0, by = 0, hovering = false;
+  const moreBtn = document.querySelector('.marquee-more');
   const measure = () => { half = track.scrollWidth / 2; };
   measure(); addEventListener('resize', measure);
-  vp.addEventListener('mouseenter', () => target = 6);
-  vp.addEventListener('mouseleave', () => target = 40);
+  vp.addEventListener('mouseenter', e => { target = 12; hovering = true; const r = vp.getBoundingClientRect(); bx = e.clientX - r.left; by = e.clientY - r.top; });
+  vp.addEventListener('mouseleave', () => { target = 90; hovering = false; });
+  vp.addEventListener('mousemove', e => { const r = vp.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
   (function tick(now){
     const dt = Math.min(0.05, (now - last)/1000); last = now;
     if (!document.body.classList.contains('motion-off')) {
-      v += (target - v) * Math.min(1, dt*6); // 감속/가속 보간
+      v += (target - v) * Math.min(1, dt*6);
       x -= v * dt;
-      if (half && -x >= half) x += half; // 절반 지점에서 이음새 없이 순환
+      if (half && -x >= half) x += half;
       track.style.transform = 'translate3d(' + x + 'px,0,0)';
+    }
+    if (hovering && moreBtn) { // 커서를 탄성 있게 따라오는 더보기 버튼
+      bx += (mx - bx) * Math.min(1, dt*10);
+      by += (my - by) * Math.min(1, dt*10);
+      moreBtn.style.left = bx + 'px'; moreBtn.style.top = by + 'px';
     }
     requestAnimationFrame(tick);
   })(last);
@@ -860,6 +893,8 @@ if (!reduced) {
   targets.forEach((el, i) => {
     el.classList.add('reveal');
     el.style.setProperty('--reveal-delay', (i % 4) * 0.07 + 's'); // 형제 간 스태거
+  }); // (아래에서 에세이 카드만 순차 딜레이 재설정)
+  document.querySelectorAll('.essay-grid .essay-card').forEach((el, i) => { el.style.setProperty('--reveal-delay', (i * 0.18) + 's');
   });
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
