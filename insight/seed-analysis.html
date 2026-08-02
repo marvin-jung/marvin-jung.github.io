@@ -505,6 +505,15 @@ body:not(.motion-ready) .reveal { transition: none; }
     <h3>블렌드 모드는 요소 단위로 계산된다</h3>
     <p>커서 필에 <code class="inline">mix-blend-mode: difference</code>를 쓰면 "배경에 따라 색이 변하는" 효과가 나긴 하는데, 밑에 있는 <strong>벡터 요소 하나하나와 개별 연산</strong>되어 필이 얼룩덜룩해집니다. 카드 단위 대표색을 읽어 전환하는 쪽이 의도에 가깝습니다.</p>
 
+    <h3>미디어쿼리는 캐스케이드를 이기지 못한다</h3>
+    <p>모바일용 <code class="inline">position: static</code> 오버라이드를 미디어쿼리에 넣어 두고도, 390px에서 계산값을 찍어 보니 여전히 <code class="inline">sticky</code>였습니다. 미디어쿼리는 특이도를 올려 주지 않으므로, 같은 특이도의 무조건 규칙이 소스에서 뒤에 오면 그쪽이 이깁니다. 1열로 쌓인 레이아웃에서 sticky 제목·사이드바가 본문 위에 떠서 겹치는 증상으로 나타났고, 오버라이드를 해당 선언 뒤에 두는 것으로 해결했습니다.</p>
+
+    <h3>이모지 프레젠테이션은 기기가 정한다</h3>
+    <p>여섯 갈래 별표(<code class="inline">U+2733</code>) 같은 문자는 크로뮴에서는 텍스트 글리프로, iOS에서는 초록 이모지로 그려집니다. 브랜드 마크처럼 색과 형태가 고정되어야 하는 자리라면 문자 대신 <code class="inline">currentColor</code>를 따르는 인라인 SVG가 안전합니다.</p>
+
+    <h3>모바일 표는 "줄이기"보다 "스크롤"</h3>
+    <p>이 글의 토큰 표를 390px에서 실측하니 행 높이가 194px까지 부풀어 있었습니다. 설명 열이 눌려 여러 줄로 꺾인 탓입니다. 표에 <code class="inline">min-width</code>를 주는 첫 시도는 문서 폭 자체를 576px로 밀어냈고(페이지 가로 스크롤), 셀 줄바꿈을 막고 표 내부만 가로 스크롤하게 바꾸자 행 높이가 37~39px로 돌아왔습니다.</p>
+
     <h2 id="s7">종합 — 일관성은 작은 결정의 총합</h2>
     <p>SEED에서 가장 배울 만한 것은 화려한 무엇이 아니라, <strong>작은 결정들이 전부 봉인되어 있다</strong>는 사실입니다. 눌림 상태의 색, 모션의 여섯 단계 duration, 리빌의 0.7초와 power3.out, 모션 감소 사용자를 위한 정지 기본값, 목차 선의 1.5px까지. 일관성은 선언이 아니라 이런 결정의 축적입니다. 이 사이트는 그 결정들을 실측해 세운 재구현이고, 이 글은 그 지도입니다 — 구조는 배우되, 얼굴(로고·일러스트·에셋)은 전부 새로 만들었습니다.</p>
 
@@ -517,7 +526,7 @@ body:not(.motion-ready) .reveal { transition: none; }
     <div class="doc-footer">
       <a href="/insight/lottie-tutorial.html" class="next"><span class="dir">다음 글</span><span class="title">움직이는 이미지의 정체 — Lottie 튜토리얼</span></a>
     </div>
-    <p class="last-updated">Last updated on 2026. 8. 1.</p>
+    <p class="last-updated">Last updated on 2026. 8. 2.</p>
   </article>
 
   <nav class="toc" aria-label="목차">
