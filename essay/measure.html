@@ -371,6 +371,13 @@ body:not(.motion-ready) .reveal { transition: none; }
     <h2 id="e4">"배포했는데 안 보여요"</h2>
     <p>배포 직후 "반영이 안 됐다"는 판단도 실측 없이는 절반쯤 틀린다. 원본 서버가 주는 응답을 캐시 우회로 직접 확인하니 배포는 완료였고, 범인은 브라우저의 10분짜리 캐시였다. 같은 화면을 보고도 "배포 실패"와 "캐시 문제"는 전혀 다른 처방을 요구한다. <strong>증상이 아니라 원인을 측정해야 처방이 맞는다.</strong></p>
 
+    <h2 id="e6">폰이 잡아준 세 개의 버그</h2>
+    <p>이 글을 배포한 뒤에도 실측은 끝나지 않았다. 데스크톱 크로뮴에서는 멀쩡하던 화면이 아이폰 스크린샷 석 장에서 무너져 있었다. 셋 다 원인은 코드에 있었고, 셋 다 숫자로 확인한 뒤에야 고칠 수 있었다.</p>
+    <p>첫째, 푸터의 여섯 갈래 별표 문자(<code class="inline">U+2733</code>)가 iOS에서만 초록 이모지로 바뀌어 있었다. 같은 문자를 크로뮴은 텍스트 글리프로, iOS는 이모지 프레젠테이션으로 그린다. 문자에 색을 맡기는 대신 <code class="inline">currentColor</code>를 따르는 인라인 SVG로 교체해 렌더러의 재량을 없앴다.</p>
+    <p>둘째, 모바일에서 섹션 제목과 문서 사이드바가 본문 위에 겹쳐 떠 있었다. 미디어쿼리로 <code class="inline">position: static</code>을 선언해 뒀는데도 계산값을 찍어 보니 <code class="inline">sticky</code>였다 — 미디어쿼리는 특이도를 올려 주지 않아서, 같은 특이도의 무조건 규칙이 소스에서 한 줄 뒤에 있으면 그쪽이 이긴다. 겹침 지점의 요소 스택(<code class="inline">elementsFromPoint</code>)으로 범인을 확정하고, 오버라이드가 그 선언 뒤에 오도록 다시 붙였다.</p>
+    <p>셋째, 토큰 표의 행 높이가 390px 화면에서 최대 194px까지 부풀어 있었다. 설명 열이 좁은 폭에 눌려 예닐곱 줄로 꺾인 탓이었다. 처음엔 표에 <code class="inline">min-width</code>를 줬는데, 문서 폭이 576px로 늘며 페이지 전체가 옆으로 밀리는 부작용이 다시 측정됐다. 셀 줄바꿈을 막고 표 내부만 스크롤하게 바꾸자 행 높이는 37~39px, 페이지 폭은 390px 그대로였다.</p>
+    <p>세 버그의 공통점: 데스크톱 개발자 도구에서는 하나도 재현되지 않았고, 실사용 기기의 스크린샷이 첫 증거였다. 실측의 범위에는 내 화면만이 아니라 <strong>남의 화면</strong>도 들어간다.</p>
+
     <h2 id="e5">태도로서의 실측</h2>
     <p>실측주의는 도구가 아니라 태도다. "아마 그럴 것"이라는 문장을 발견하면 "확인했더니 그렇다"로 바꿀 방법을 찾는 것. 확인할 수 없다면, 확인하지 못했다고 정직하게 적는 것. 이 사이트의 모든 글이 그 원칙으로 쓰였고, 앞으로의 글도 그럴 것이다.</p>
 
@@ -383,7 +390,7 @@ body:not(.motion-ready) .reveal { transition: none; }
     <div class="doc-footer">
       <a href="/essay/borrow.html" class="next"><span class="dir">다음 글</span><span class="title">훔치지 않고 배우기</span></a>
     </div>
-    <p class="last-updated">Last updated on 2026. 8. 1.</p>
+    <p class="last-updated">Last updated on 2026. 8. 2.</p>
   </article>
 
   <nav class="toc" aria-label="목차">
@@ -393,6 +400,7 @@ body:not(.motion-ready) .reveal { transition: none; }
       <li><a href="#e2">확인의 비용</a></li>
       <li><a href="#e3">확인이 잡아낸 것들</a></li>
       <li><a href="#e4">배포와 캐시</a></li>
+      <li><a href="#e6">폰이 잡아준 버그들</a></li>
       <li><a href="#e5">태도로서의 실측</a></li>
     </ul>
   </nav>
