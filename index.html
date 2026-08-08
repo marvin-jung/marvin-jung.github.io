@@ -607,6 +607,9 @@ body.landing .nav .logo { font-size: 16px; }
   .intro-band h1 { font-size: clamp(28px, 8vw, 40px); }
 }
 
+/* 데스크톱(Windows) 100vw 풀블리드가 세로 스크롤바 폭만큼 넘치는 문제 */
+html, body { overflow-x: clip; }
+
 /* 모바일 오버플로 수정: flex/grid 아이템이 콘텐츠 폭으로 늘어나 줄바꿈을 막는 문제 */
 .sec-head > div, .principle-grid > * { min-width: 0; }
 
