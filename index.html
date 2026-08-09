@@ -645,35 +645,54 @@ body.mnav-open .mnav { transform: translateY(0); pointer-events: auto; }
 }
 
 /* 에세이 '준비 중' 카드: 브랜드 마크 로딩 스피너 */
-/* 로딩 마크: 영상 실측 재현 — 별표 보일 0.7s(8장) → 수축 0.2s(2장) → 점 고리 90°/100ms 회전 0.9s(9스텝) → 복원 0.2s(2장), 2.0s 루프 */
+/* 로딩 마크 15s 마스터 루프: 0~8.64s 별표 보일만(12사이클) → 8.64~14.64s [별표→점 고리→복귀] 2s 사이클 ×3. 전체는 히어로처럼 회전(더 빠르게, 루프당 1바퀴) */
+.thumb .loadmark { transform-box: view-box; transform-origin: 50% 50%; animation: loadRot 14.64s linear infinite; }
+@keyframes loadRot { to { transform: rotate(360deg); } }
 .thumb .loadmark .lmf { visibility: hidden; }
-.thumb .loadmark .lmf:nth-child(-n+8) { animation: loadBoilA 2s step-end infinite; }
-.thumb .loadmark .lmf:nth-child(n+9) { animation: loadBoilB 2s step-end infinite; }
-.thumb .loadmark .lmf:nth-child(1) { animation-delay: 0.0000s; }
-.thumb .loadmark .lmf:nth-child(2) { animation-delay: 0.0875s; }
-.thumb .loadmark .lmf:nth-child(3) { animation-delay: 0.1750s; }
-.thumb .loadmark .lmf:nth-child(4) { animation-delay: 0.2625s; }
-.thumb .loadmark .lmf:nth-child(5) { animation-delay: 0.3500s; }
-.thumb .loadmark .lmf:nth-child(6) { animation-delay: 0.4375s; }
-.thumb .loadmark .lmf:nth-child(7) { animation-delay: 0.5250s; }
-.thumb .loadmark .lmf:nth-child(8) { animation-delay: 0.6125s; }
-.thumb .loadmark .lmf:nth-child(9) { animation-delay: 0.7s; }
-.thumb .loadmark .lmf:nth-child(10) { animation-delay: 0.8s; }
-.thumb .loadmark .lmf:nth-child(11) { animation-delay: 0.9s; }
-.thumb .loadmark .lmf:nth-child(12) { animation-delay: 1.0s; }
-.thumb .loadmark .lmf:nth-child(13) { animation-delay: 1.1s; }
-.thumb .loadmark .lmf:nth-child(14) { animation-delay: 1.2s; }
-.thumb .loadmark .lmf:nth-child(15) { animation-delay: 1.3s; }
-.thumb .loadmark .lmf:nth-child(16) { animation-delay: 1.4s; }
-.thumb .loadmark .lmf:nth-child(17) { animation-delay: 1.5s; }
-.thumb .loadmark .lmf:nth-child(18) { animation-delay: 1.6s; }
-.thumb .loadmark .lmf:nth-child(19) { animation-delay: 1.7s; }
-.thumb .loadmark .lmf:nth-child(20) { animation-delay: 1.8s; }
-.thumb .loadmark .lmf:nth-child(21) { animation-delay: 1.9s; }
-@keyframes loadBoilA { 0%, 4.3% { visibility: visible; } 4.375%, 100% { visibility: hidden; } }
-@keyframes loadBoilB { 0%, 4.9% { visibility: visible; } 5%, 100% { visibility: hidden; } }
-@media (prefers-reduced-motion: reduce){ .thumb .loadmark .lmf { animation: none; } .thumb .loadmark .lmf:first-child { visibility: visible; } }
-body.motion-off .thumb .loadmark .lmf { animation-play-state: paused; }
+.thumb .loadmark .lmf:nth-child(1) { animation: lmw1 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(2) { animation: lmw2 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(3) { animation: lmw3 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(4) { animation: lmw4 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(5) { animation: lmw5 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(6) { animation: lmw6 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(7) { animation: lmw7 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(8) { animation: lmw8 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(9) { animation: lmw9 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(10) { animation: lmw10 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(11) { animation: lmw11 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(12) { animation: lmw12 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(13) { animation: lmw13 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(14) { animation: lmw14 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(15) { animation: lmw15 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(16) { animation: lmw16 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(17) { animation: lmw17 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(18) { animation: lmw18 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(19) { animation: lmw19 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(20) { animation: lmw20 14.64s step-end infinite; }
+.thumb .loadmark .lmf:nth-child(21) { animation: lmw21 14.64s step-end infinite; }
+@keyframes lmw1 { 0.0% { visibility: visible; } 0.6148% { visibility: hidden; } 4.918% { visibility: visible; } 5.5328% { visibility: hidden; } 9.8361% { visibility: visible; } 10.4508% { visibility: hidden; } 14.7541% { visibility: visible; } 15.3689% { visibility: hidden; } 19.6721% { visibility: visible; } 20.2869% { visibility: hidden; } 24.5902% { visibility: visible; } 25.2049% { visibility: hidden; } 29.5082% { visibility: visible; } 30.123% { visibility: hidden; } 34.4262% { visibility: visible; } 35.041% { visibility: hidden; } 39.3443% { visibility: visible; } 39.959% { visibility: hidden; } 44.2623% { visibility: visible; } 44.877% { visibility: hidden; } 49.1803% { visibility: visible; } 49.7951% { visibility: hidden; } 54.0984% { visibility: visible; } 54.7131% { visibility: hidden; } 59.0164% { visibility: visible; } 59.6141% { visibility: hidden; } 72.6776% { visibility: visible; } 73.2753% { visibility: hidden; } 86.3388% { visibility: visible; } 86.9365% { visibility: hidden; } }
+@keyframes lmw2 { 0.6148% { visibility: visible; } 1.2295% { visibility: hidden; } 5.5328% { visibility: visible; } 6.1475% { visibility: hidden; } 10.4508% { visibility: visible; } 11.0656% { visibility: hidden; } 15.3689% { visibility: visible; } 15.9836% { visibility: hidden; } 20.2869% { visibility: visible; } 20.9016% { visibility: hidden; } 25.2049% { visibility: visible; } 25.8197% { visibility: hidden; } 30.123% { visibility: visible; } 30.7377% { visibility: hidden; } 35.041% { visibility: visible; } 35.6557% { visibility: hidden; } 39.959% { visibility: visible; } 40.5738% { visibility: hidden; } 44.877% { visibility: visible; } 45.4918% { visibility: hidden; } 49.7951% { visibility: visible; } 50.4098% { visibility: hidden; } 54.7131% { visibility: visible; } 55.3279% { visibility: hidden; } 59.6141% { visibility: visible; } 60.2117% { visibility: hidden; } 73.2753% { visibility: visible; } 73.873% { visibility: hidden; } 86.9365% { visibility: visible; } 87.5342% { visibility: hidden; } }
+@keyframes lmw3 { 1.2295% { visibility: visible; } 1.8443% { visibility: hidden; } 6.1475% { visibility: visible; } 6.7623% { visibility: hidden; } 11.0656% { visibility: visible; } 11.6803% { visibility: hidden; } 15.9836% { visibility: visible; } 16.5984% { visibility: hidden; } 20.9016% { visibility: visible; } 21.5164% { visibility: hidden; } 25.8197% { visibility: visible; } 26.4344% { visibility: hidden; } 30.7377% { visibility: visible; } 31.3525% { visibility: hidden; } 35.6557% { visibility: visible; } 36.2705% { visibility: hidden; } 40.5738% { visibility: visible; } 41.1885% { visibility: hidden; } 45.4918% { visibility: visible; } 46.1066% { visibility: hidden; } 50.4098% { visibility: visible; } 51.0246% { visibility: hidden; } 55.3279% { visibility: visible; } 55.9426% { visibility: hidden; } 60.2117% { visibility: visible; } 60.8094% { visibility: hidden; } 73.873% { visibility: visible; } 74.4706% { visibility: hidden; } 87.5342% { visibility: visible; } 88.1318% { visibility: hidden; } }
+@keyframes lmw4 { 1.8443% { visibility: visible; } 2.459% { visibility: hidden; } 6.7623% { visibility: visible; } 7.377% { visibility: hidden; } 11.6803% { visibility: visible; } 12.2951% { visibility: hidden; } 16.5984% { visibility: visible; } 17.2131% { visibility: hidden; } 21.5164% { visibility: visible; } 22.1311% { visibility: hidden; } 26.4344% { visibility: visible; } 27.0492% { visibility: hidden; } 31.3525% { visibility: visible; } 31.9672% { visibility: hidden; } 36.2705% { visibility: visible; } 36.8852% { visibility: hidden; } 41.1885% { visibility: visible; } 41.8033% { visibility: hidden; } 46.1066% { visibility: visible; } 46.7213% { visibility: hidden; } 51.0246% { visibility: visible; } 51.6393% { visibility: hidden; } 55.9426% { visibility: visible; } 56.5574% { visibility: hidden; } 60.8094% { visibility: visible; } 61.4071% { visibility: hidden; } 74.4706% { visibility: visible; } 75.0683% { visibility: hidden; } 88.1318% { visibility: visible; } 88.7295% { visibility: hidden; } }
+@keyframes lmw5 { 2.459% { visibility: visible; } 3.0738% { visibility: hidden; } 7.377% { visibility: visible; } 7.9918% { visibility: hidden; } 12.2951% { visibility: visible; } 12.9098% { visibility: hidden; } 17.2131% { visibility: visible; } 17.8279% { visibility: hidden; } 22.1311% { visibility: visible; } 22.7459% { visibility: hidden; } 27.0492% { visibility: visible; } 27.6639% { visibility: hidden; } 31.9672% { visibility: visible; } 32.582% { visibility: hidden; } 36.8852% { visibility: visible; } 37.5% { visibility: hidden; } 41.8033% { visibility: visible; } 42.418% { visibility: hidden; } 46.7213% { visibility: visible; } 47.3361% { visibility: hidden; } 51.6393% { visibility: visible; } 52.2541% { visibility: hidden; } 56.5574% { visibility: visible; } 57.1721% { visibility: hidden; } 61.4071% { visibility: visible; } 62.0048% { visibility: hidden; } 75.0683% { visibility: visible; } 75.666% { visibility: hidden; } 88.7295% { visibility: visible; } 89.3272% { visibility: hidden; } }
+@keyframes lmw6 { 3.0738% { visibility: visible; } 3.6885% { visibility: hidden; } 7.9918% { visibility: visible; } 8.6066% { visibility: hidden; } 12.9098% { visibility: visible; } 13.5246% { visibility: hidden; } 17.8279% { visibility: visible; } 18.4426% { visibility: hidden; } 22.7459% { visibility: visible; } 23.3607% { visibility: hidden; } 27.6639% { visibility: visible; } 28.2787% { visibility: hidden; } 32.582% { visibility: visible; } 33.1967% { visibility: hidden; } 37.5% { visibility: visible; } 38.1148% { visibility: hidden; } 42.418% { visibility: visible; } 43.0328% { visibility: hidden; } 47.3361% { visibility: visible; } 47.9508% { visibility: hidden; } 52.2541% { visibility: visible; } 52.8689% { visibility: hidden; } 57.1721% { visibility: visible; } 57.7869% { visibility: hidden; } 62.0048% { visibility: visible; } 62.6025% { visibility: hidden; } 75.666% { visibility: visible; } 76.2637% { visibility: hidden; } 89.3272% { visibility: visible; } 89.9249% { visibility: hidden; } }
+@keyframes lmw7 { 3.6885% { visibility: visible; } 4.3033% { visibility: hidden; } 8.6066% { visibility: visible; } 9.2213% { visibility: hidden; } 13.5246% { visibility: visible; } 14.1393% { visibility: hidden; } 18.4426% { visibility: visible; } 19.0574% { visibility: hidden; } 23.3607% { visibility: visible; } 23.9754% { visibility: hidden; } 28.2787% { visibility: visible; } 28.8934% { visibility: hidden; } 33.1967% { visibility: visible; } 33.8115% { visibility: hidden; } 38.1148% { visibility: visible; } 38.7295% { visibility: hidden; } 43.0328% { visibility: visible; } 43.6475% { visibility: hidden; } 47.9508% { visibility: visible; } 48.5656% { visibility: hidden; } 52.8689% { visibility: visible; } 53.4836% { visibility: hidden; } 57.7869% { visibility: visible; } 58.4016% { visibility: hidden; } 62.6025% { visibility: visible; } 63.2001% { visibility: hidden; } 76.2637% { visibility: visible; } 76.8613% { visibility: hidden; } 89.9249% { visibility: visible; } 90.5225% { visibility: hidden; } }
+@keyframes lmw8 { 4.3033% { visibility: visible; } 4.918% { visibility: hidden; } 9.2213% { visibility: visible; } 9.8361% { visibility: hidden; } 14.1393% { visibility: visible; } 14.7541% { visibility: hidden; } 19.0574% { visibility: visible; } 19.6721% { visibility: hidden; } 23.9754% { visibility: visible; } 24.5902% { visibility: hidden; } 28.8934% { visibility: visible; } 29.5082% { visibility: hidden; } 33.8115% { visibility: visible; } 34.4262% { visibility: hidden; } 38.7295% { visibility: visible; } 39.3443% { visibility: hidden; } 43.6475% { visibility: visible; } 44.2623% { visibility: hidden; } 48.5656% { visibility: visible; } 49.1803% { visibility: hidden; } 53.4836% { visibility: visible; } 54.0984% { visibility: hidden; } 58.4016% { visibility: visible; } 59.0164% { visibility: hidden; } 63.2001% { visibility: visible; } 63.7978% { visibility: hidden; } 76.8613% { visibility: visible; } 77.459% { visibility: hidden; } 90.5225% { visibility: visible; } 91.1202% { visibility: hidden; } }
+@keyframes lmw9 { 63.7978% { visibility: visible; } 64.4809% { visibility: hidden; } 77.459% { visibility: visible; } 78.1421% { visibility: hidden; } 91.1202% { visibility: visible; } 91.8033% { visibility: hidden; } }
+@keyframes lmw10 { 64.4809% { visibility: visible; } 65.1639% { visibility: hidden; } 78.1421% { visibility: visible; } 78.8251% { visibility: hidden; } 91.8033% { visibility: visible; } 92.4863% { visibility: hidden; } }
+@keyframes lmw11 { 65.1639% { visibility: visible; } 65.847% { visibility: hidden; } 78.8251% { visibility: visible; } 79.5082% { visibility: hidden; } 92.4863% { visibility: visible; } 93.1694% { visibility: hidden; } }
+@keyframes lmw12 { 65.847% { visibility: visible; } 66.5301% { visibility: hidden; } 79.5082% { visibility: visible; } 80.1913% { visibility: hidden; } 93.1694% { visibility: visible; } 93.8525% { visibility: hidden; } }
+@keyframes lmw13 { 66.5301% { visibility: visible; } 67.2131% { visibility: hidden; } 80.1913% { visibility: visible; } 80.8743% { visibility: hidden; } 93.8525% { visibility: visible; } 94.5355% { visibility: hidden; } }
+@keyframes lmw14 { 67.2131% { visibility: visible; } 67.8962% { visibility: hidden; } 80.8743% { visibility: visible; } 81.5574% { visibility: hidden; } 94.5355% { visibility: visible; } 95.2186% { visibility: hidden; } }
+@keyframes lmw15 { 67.8962% { visibility: visible; } 68.5792% { visibility: hidden; } 81.5574% { visibility: visible; } 82.2404% { visibility: hidden; } 95.2186% { visibility: visible; } 95.9016% { visibility: hidden; } }
+@keyframes lmw16 { 68.5792% { visibility: visible; } 69.2623% { visibility: hidden; } 82.2404% { visibility: visible; } 82.9235% { visibility: hidden; } 95.9016% { visibility: visible; } 96.5847% { visibility: hidden; } }
+@keyframes lmw17 { 69.2623% { visibility: visible; } 69.9454% { visibility: hidden; } 82.9235% { visibility: visible; } 83.6066% { visibility: hidden; } 96.5847% { visibility: visible; } 97.2678% { visibility: hidden; } }
+@keyframes lmw18 { 69.9454% { visibility: visible; } 70.6284% { visibility: hidden; } 83.6066% { visibility: visible; } 84.2896% { visibility: hidden; } 97.2678% { visibility: visible; } 97.9508% { visibility: hidden; } }
+@keyframes lmw19 { 70.6284% { visibility: visible; } 71.3115% { visibility: hidden; } 84.2896% { visibility: visible; } 84.9727% { visibility: hidden; } 97.9508% { visibility: visible; } 98.6339% { visibility: hidden; } }
+@keyframes lmw20 { 71.3115% { visibility: visible; } 71.9945% { visibility: hidden; } 84.9727% { visibility: visible; } 85.6557% { visibility: hidden; } 98.6339% { visibility: visible; } 99.3169% { visibility: hidden; } }
+@keyframes lmw21 { 71.9945% { visibility: visible; } 72.6776% { visibility: hidden; } 85.6557% { visibility: visible; } 86.3388% { visibility: hidden; } 99.3169% { visibility: visible; } 100.0% { visibility: hidden; } }
+@media (prefers-reduced-motion: reduce){ .thumb .loadmark, .thumb .loadmark .lmf { animation: none; } .thumb .loadmark .lmf:first-child { visibility: visible; } }
+body.motion-off .thumb .loadmark, body.motion-off .thumb .loadmark .lmf { animation-play-state: paused; }
 </style>
 </head>
 <body class="landing">
@@ -899,7 +918,7 @@ body.motion-off .thumb .loadmark .lmf { animation-play-state: paused; }
           </div>
         </div>
       </div>
-      <div class="finale-big"><svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg> JISUNG</div>
+      <div class="finale-big"><svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M2 12h20M3.34 7l17.32 10M20.66 7L3.34 17M7 3.34l10 17.32M17 3.34L7 20.66"/></svg> JISUNG</div>
     </div>
   </div>
 </footer>
@@ -922,22 +941,22 @@ function toggleTheme(){ applyTheme(root.getAttribute('data-theme') === 'dark' ? 
 // SEED 방식: SVG 렌더러 + 포스터 배경 + 전역 재생/정지 컨트롤
 // ============================================================
 const seedAnimData = (() => {
-  // 거대 마크: 8갈래 애스터리스크 — 45도 대칭이라 0→45도 회전이 이음새 없는 루프
+  // 거대 마크: 12갈래 애스터리스크 — 30도 대칭이라 0→30도 회전이 이음새 없는 루프
   // 규칙: 마지막이 아닌 keyframe에는 easing 필수 (lottie_light 렌더 깨짐 방지)
   const EZ = {o:{x:[.42],y:[0]},i:{x:[.58],y:[1]}};
-  const spokes = [0, 45, 90, 135].map((deg, i) => ({
+  const spokes = [0, 30, 60, 90, 120, 150].map((deg, i) => ({
     ty: "gr", it: [
-      { ty: "rc", p: {a:0,k:[0,0]}, s: {a:0,k:[500,88]}, r: {a:0,k:44} },
+      { ty: "rc", p: {a:0,k:[0,0]}, s: {a:0,k:[500,58]}, r: {a:0,k:29} },
       { ty: "fl", c: {a:0,k:[1,.4,0,1]}, o: {a:0,k:100} },
       { ty: "tr", p: {a:0,k:[0,0]}, a: {a:0,k:[0,0]}, s: {a:0,k:[100,100]}, r: {a:0,k:deg}, o: {a:0,k:100} }
     ]
   }));
-  return { v:"5.7.4", fr:30, ip:0, op:240, w:1600, h:760, nm:"mark", ddd:0, assets:[],
-    layers:[{ ddd:0, ind:1, ty:4, nm:"asterisk", sr:1, ao:0, ip:0, op:240, st:0,
+  return { v:"5.7.4", fr:30, ip:0, op:160, w:1600, h:760, nm:"mark", ddd:0, assets:[],
+    layers:[{ ddd:0, ind:1, ty:4, nm:"asterisk", sr:1, ao:0, ip:0, op:160, st:0,
       ks:{ o:{a:0,k:100},
-        r:{a:1,k:[{t:0,s:[0],...EZ},{t:240,s:[45]}]},
+        r:{a:1,k:[{t:0,s:[0],...EZ},{t:160,s:[30]}]},
         p:{a:0,k:[290,380,0]}, a:{a:0,k:[0,0,0]},
-        s:{a:1,k:[{t:0,s:[100,100,100],...EZ},{t:120,s:[104,104,100],...EZ},{t:240,s:[100,100,100]}]} },
+        s:{a:1,k:[{t:0,s:[100,100,100],...EZ},{t:80,s:[104,104,100],...EZ},{t:160,s:[100,100,100]}]} },
       shapes: spokes }] };
 })();
 
